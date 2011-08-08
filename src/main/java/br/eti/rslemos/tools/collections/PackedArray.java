@@ -62,4 +62,11 @@ public abstract class PackedArray<T> {
 		checkBoundaries(pos);
 		data[computeAddress(pos)] = element;
 	}
+	
+	public int length(int dimension) {
+		if (dimension < 0 || dimension >= sizes.length)
+			throw new IllegalArgumentException("Illegal dimension: " + dimension);
+		
+		return sizes[dimension];
+	}
 }
