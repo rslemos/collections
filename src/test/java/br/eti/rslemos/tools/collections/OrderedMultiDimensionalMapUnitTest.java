@@ -30,7 +30,7 @@ import org.junit.Test;
 public class OrderedMultiDimensionalMapUnitTest {
 	@Test
 	public void testOneDimensionalMap() {
-		MultiDimensionalMap<String, Integer> map = new OrderedMultiDimensionalMap<String, Integer>(new RowMajorPackedArray<Integer>(10));
+		MultiDimensionalMap<String, Integer> map = new OrderedMultiDimensionalMap<String, Integer>(new BigEndianPackedArray<Integer>(10));
 		
 		// info
 		assertThat(map.dimensions(), is(equalTo(1)));

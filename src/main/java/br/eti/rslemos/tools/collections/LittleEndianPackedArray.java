@@ -20,9 +20,9 @@
  ******************************************************************************/
 package br.eti.rslemos.tools.collections;
 
-public class RowMajorPackedArray<T> extends PackedArray<T> {
+public class LittleEndianPackedArray<T> extends PackedArray<T> {
 
-	public RowMajorPackedArray(int... sizes) {
+	public LittleEndianPackedArray(int... sizes) {
 		super(sizes);
 	}
 
@@ -31,9 +31,9 @@ public class RowMajorPackedArray<T> extends PackedArray<T> {
 		int address = 0;
 		int stride = 1;
 		
-		for (int i = pos.length; i > 0; i--) {
-			address += pos[i-1] * stride;
-			stride *= sizes[i-1];
+		for (int i = 0; i < pos.length; i++) {
+			address += pos[i] * stride;
+			stride *= sizes[i];
 		}
 		
 		return address;

@@ -26,41 +26,41 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-public class ColumnMajorPackedArrayUnitTest extends PackedArrayUnitTest {
+public class BigEndianPackedArrayUnitTest extends PackedArrayUnitTest {
 	
 	@Override
 	protected PackedArray<String> createStringArray(int... sizes) {
-		return new ColumnMajorPackedArray<String>(sizes);
+		return new BigEndianPackedArray<String>(sizes);
 	}
 	
 	@Test
 	public void testElementLayout() {
-		ColumnMajorPackedArray<Object> oneDimArray = new ColumnMajorPackedArray<Object>(5);
+		BigEndianPackedArray<Object> oneDimArray = new BigEndianPackedArray<Object>(5);
 		assertThat(oneDimArray.computeAddress(0), is(equalTo(0)));
 		assertThat(oneDimArray.computeAddress(1), is(equalTo(1)));
 		assertThat(oneDimArray.computeAddress(2), is(equalTo(2)));
 		assertThat(oneDimArray.computeAddress(3), is(equalTo(3)));
 		assertThat(oneDimArray.computeAddress(4), is(equalTo(4)));
 
-		ColumnMajorPackedArray<Object> twoDimArray = new ColumnMajorPackedArray<Object>(3, 3);
+		BigEndianPackedArray<Object> twoDimArray = new BigEndianPackedArray<Object>(3, 3);
 		assertThat(twoDimArray.computeAddress(0, 0), is(equalTo(0)));
-		assertThat(twoDimArray.computeAddress(1, 0), is(equalTo(1)));
-		assertThat(twoDimArray.computeAddress(2, 0), is(equalTo(2)));
-		assertThat(twoDimArray.computeAddress(0, 1), is(equalTo(3)));
+		assertThat(twoDimArray.computeAddress(0, 1), is(equalTo(1)));
+		assertThat(twoDimArray.computeAddress(0, 2), is(equalTo(2)));
+		assertThat(twoDimArray.computeAddress(1, 0), is(equalTo(3)));
 		assertThat(twoDimArray.computeAddress(1, 1), is(equalTo(4)));
-		assertThat(twoDimArray.computeAddress(2, 1), is(equalTo(5)));
-		assertThat(twoDimArray.computeAddress(0, 2), is(equalTo(6)));
-		assertThat(twoDimArray.computeAddress(1, 2), is(equalTo(7)));
+		assertThat(twoDimArray.computeAddress(1, 2), is(equalTo(5)));
+		assertThat(twoDimArray.computeAddress(2, 0), is(equalTo(6)));
+		assertThat(twoDimArray.computeAddress(2, 1), is(equalTo(7)));
 		assertThat(twoDimArray.computeAddress(2, 2), is(equalTo(8)));
 
-		ColumnMajorPackedArray<Object> threeDimArray = new ColumnMajorPackedArray<Object>(2, 2, 2);
+		BigEndianPackedArray<Object> threeDimArray = new BigEndianPackedArray<Object>(2, 2, 2);
 		assertThat(threeDimArray.computeAddress(0, 0, 0), is(equalTo(0)));
-		assertThat(threeDimArray.computeAddress(1, 0, 0), is(equalTo(1)));
+		assertThat(threeDimArray.computeAddress(0, 0, 1), is(equalTo(1)));
 		assertThat(threeDimArray.computeAddress(0, 1, 0), is(equalTo(2)));
-		assertThat(threeDimArray.computeAddress(1, 1, 0), is(equalTo(3)));
-		assertThat(threeDimArray.computeAddress(0, 0, 1), is(equalTo(4)));
+		assertThat(threeDimArray.computeAddress(0, 1, 1), is(equalTo(3)));
+		assertThat(threeDimArray.computeAddress(1, 0, 0), is(equalTo(4)));
 		assertThat(threeDimArray.computeAddress(1, 0, 1), is(equalTo(5)));
-		assertThat(threeDimArray.computeAddress(0, 1, 1), is(equalTo(6)));
+		assertThat(threeDimArray.computeAddress(1, 1, 0), is(equalTo(6)));
 		assertThat(threeDimArray.computeAddress(1, 1, 1), is(equalTo(7)));
 	}
 }
