@@ -62,11 +62,8 @@ public abstract class PackedArray<T> implements MultiDimensionalArray<T> {
 		data[computeAddress(pos)] = element;
 	}
 	
-	public int length(int dimension) {
-		if (dimension < 0 || dimension >= sizes.length)
-			throw new IllegalArgumentException("Illegal dimension: " + dimension);
-		
-		return sizes[dimension];
+	public int[] length() {
+		return sizes.clone();
 	}
 
 	public int dimensions() {

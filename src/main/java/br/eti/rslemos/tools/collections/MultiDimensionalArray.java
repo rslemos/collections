@@ -26,7 +26,7 @@ public interface MultiDimensionalArray<T> {
 
 	void set(T element, int... pos);
 
-	int length(int dimension);
+	int[] length();
 
 	int dimensions();
 

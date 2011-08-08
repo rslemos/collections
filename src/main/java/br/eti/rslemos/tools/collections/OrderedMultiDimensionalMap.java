@@ -34,7 +34,7 @@ public class OrderedMultiDimensionalMap<K, V> implements MultiDimensionalMap<K, 
 		index = (K[][]) new Object[array.dimensions()][];
 		length = new int[array.dimensions()];
 		for (int i = 0; i < index.length; i++) {
-			index[i] = (K[]) new Object[array.length(i)];
+			index[i] = (K[]) new Object[array.length()[i]];
 		}
 	}
 

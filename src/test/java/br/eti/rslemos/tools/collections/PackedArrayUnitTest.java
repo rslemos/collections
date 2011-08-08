@@ -37,7 +37,7 @@ public abstract class PackedArrayUnitTest {
 		
 		// info
 		assertThat(array.dimensions(), is(equalTo(1)));
-		assertThat(array.length(0), is(equalTo(6)));
+		assertThat(array.length(), is(equalTo(new int[] {6})));
 		
 		// storage
 		array.set("[0]", 0);
@@ -55,9 +55,6 @@ public abstract class PackedArrayUnitTest {
 		assertThat(array.get(5), is(equalTo("[5]")));
 		
 		// boundary check
-		lengthAndExpectException(IllegalArgumentException.class, array, -1);
-		lengthAndExpectException(IllegalArgumentException.class, array,  1);
-		
 		accessAndExpectException(ArrayIndexOutOfBoundsException.class, array, -1);
 		accessAndExpectException(ArrayIndexOutOfBoundsException.class, array,  6);
 		
@@ -72,8 +69,7 @@ public abstract class PackedArrayUnitTest {
 
 		// info
 		assertThat(array.dimensions(), is(equalTo(2)));
-		assertThat(array.length(0), is(equalTo(3)));
-		assertThat(array.length(1), is(equalTo(3)));
+		assertThat(array.length(), is(equalTo(new int[] {3, 3})));
 		
 		// storage
 		array.set("[0, 0]", 0, 0);
@@ -97,9 +93,6 @@ public abstract class PackedArrayUnitTest {
 		assertThat(array.get(2, 2), is(equalTo("[2, 2]")));
 		
 		// boundary check
-		lengthAndExpectException(IllegalArgumentException.class, array, -1);
-		lengthAndExpectException(IllegalArgumentException.class, array,  2);
-		
 		accessAndExpectException(ArrayIndexOutOfBoundsException.class, array,  0, -1);
 		accessAndExpectException(ArrayIndexOutOfBoundsException.class, array, -1,  0);
 		accessAndExpectException(ArrayIndexOutOfBoundsException.class, array,  0,  3);
@@ -116,9 +109,7 @@ public abstract class PackedArrayUnitTest {
 
 		// info
 		assertThat(array.dimensions(), is(equalTo(3)));
-		assertThat(array.length(0), is(equalTo(2)));
-		assertThat(array.length(1), is(equalTo(2)));
-		assertThat(array.length(2), is(equalTo(2)));
+		assertThat(array.length(), is(equalTo(new int[] {2, 2, 2})));
 
 		// storage
 		array.set("[0, 0, 0]", 0, 0, 0);
@@ -140,9 +131,6 @@ public abstract class PackedArrayUnitTest {
 		assertThat(array.get(1, 1, 1), is(equalTo("[1, 1, 1]")));
 		
 		// boundary check
-		lengthAndExpectException(IllegalArgumentException.class, array, -1);
-		lengthAndExpectException(IllegalArgumentException.class, array,  3);
-		
 		accessAndExpectException(ArrayIndexOutOfBoundsException.class, array,  0,  0, -1);
 		accessAndExpectException(ArrayIndexOutOfBoundsException.class, array,  0, -1,  0);
 		accessAndExpectException(ArrayIndexOutOfBoundsException.class, array, -1,  0,  0);
@@ -173,16 +161,6 @@ public abstract class PackedArrayUnitTest {
 	private static <E extends RuntimeException> void getAndExpectException(Class<E> clazz, MultiDimensionalArray<String> array, int... pos) {
 		try {
 			array.get(pos);
-			fail("Should have thrown " + clazz);
-		} catch (RuntimeException expected) {
-			if (!clazz.isInstance(expected))
-				throw expected;
-		}
-	}
-
-	private static <E extends RuntimeException> void lengthAndExpectException(Class<E> clazz, MultiDimensionalArray<String> array, int dimension) {
-		try {
-			array.length(dimension);
 			fail("Should have thrown " + clazz);
 		} catch (RuntimeException expected) {
 			if (!clazz.isInstance(expected))
