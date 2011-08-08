@@ -21,7 +21,7 @@
  ******************************************************************************/
 package br.eti.rslemos.tools.collections;
 
-public abstract class PackedArray<T> {
+public abstract class PackedArray<T> implements MultiDimensionalArray<T> {
 	protected final int[] sizes;
 	private T[] data;
 
@@ -68,5 +68,9 @@ public abstract class PackedArray<T> {
 			throw new IllegalArgumentException("Illegal dimension: " + dimension);
 		
 		return sizes[dimension];
+	}
+
+	public int dimensions() {
+		return sizes.length;
 	}
 }

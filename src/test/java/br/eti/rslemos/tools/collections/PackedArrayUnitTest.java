@@ -30,13 +30,14 @@ import org.junit.Test;
 
 public abstract class PackedArrayUnitTest {
 
-	protected abstract PackedArray<String> createStringArray(int... sizes);
+	protected abstract MultiDimensionalArray<String> createStringArray(int... sizes);
 
 	@Test
 	public void testOneDimensionalArray() {
-		PackedArray<String> array = createStringArray(6);
+		MultiDimensionalArray<String> array = createStringArray(6);
 		
 		// info
+		assertThat(array.dimensions(), is(equalTo(1)));
 		assertThat(array.length(0), is(equalTo(6)));
 		
 		// storage
@@ -68,9 +69,10 @@ public abstract class PackedArrayUnitTest {
 	
 	@Test
 	public void testTwoDimensionalArray() {
-		PackedArray<String> array = createStringArray(3, 3);
+		MultiDimensionalArray<String> array = createStringArray(3, 3);
 
 		// info
+		assertThat(array.dimensions(), is(equalTo(2)));
 		assertThat(array.length(0), is(equalTo(3)));
 		assertThat(array.length(1), is(equalTo(3)));
 		
@@ -111,9 +113,10 @@ public abstract class PackedArrayUnitTest {
 
 	@Test
 	public void testThreeDimensionalArray() {
-		PackedArray<String> array = createStringArray(2, 2, 2);
+		MultiDimensionalArray<String> array = createStringArray(2, 2, 2);
 
 		// info
+		assertThat(array.dimensions(), is(equalTo(3)));
 		assertThat(array.length(0), is(equalTo(2)));
 		assertThat(array.length(1), is(equalTo(2)));
 		assertThat(array.length(2), is(equalTo(2)));
@@ -153,12 +156,12 @@ public abstract class PackedArrayUnitTest {
 		accessAndExpectException(IllegalArgumentException.class, array, 0, 0);
 	}
 
-	private static <E extends RuntimeException> void accessAndExpectException(Class<E> clazz, PackedArray<String> array, int... pos) {
+	private static <E extends RuntimeException> void accessAndExpectException(Class<E> clazz, MultiDimensionalArray<String> array, int... pos) {
 		getAndExpectException(clazz, array, pos);
 		setAndExpectException(clazz, array, pos);
 	}
 
-	private static <E extends RuntimeException> void setAndExpectException(Class<E> clazz, PackedArray<String> array, int... pos) {
+	private static <E extends RuntimeException> void setAndExpectException(Class<E> clazz, MultiDimensionalArray<String> array, int... pos) {
 		try {
 			array.set(null, pos);
 			fail("Should have thrown " + clazz);
@@ -168,7 +171,7 @@ public abstract class PackedArrayUnitTest {
 		}
 	}
 
-	private static <E extends RuntimeException> void getAndExpectException(Class<E> clazz, PackedArray<String> array, int... pos) {
+	private static <E extends RuntimeException> void getAndExpectException(Class<E> clazz, MultiDimensionalArray<String> array, int... pos) {
 		try {
 			array.get(pos);
 			fail("Should have thrown " + clazz);
@@ -178,7 +181,7 @@ public abstract class PackedArrayUnitTest {
 		}
 	}
 
-	private static <E extends RuntimeException> void lengthAndExpectException(Class<E> clazz, PackedArray<String> array, int dimension) {
+	private static <E extends RuntimeException> void lengthAndExpectException(Class<E> clazz, MultiDimensionalArray<String> array, int dimension) {
 		try {
 			array.length(dimension);
 			fail("Should have thrown " + clazz);
