@@ -99,8 +99,10 @@ public class PackedArray<T> implements MultiDimensionalArray<T> {
 		return data[computeAddress(pos)];
 	}
 
-	public void set(T element, int... pos) {
+	public T set(T element, int... pos) {
+		T old = data[computeAddress(pos)];
 		data[computeAddress(pos)] = element;
+		return old;
 	}
 	
 	public PackedArray<T> slice(int dimension, int from, int to) {

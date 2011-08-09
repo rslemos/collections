@@ -20,20 +20,35 @@
  ******************************************************************************/
 package br.eti.rslemos.tools.collections;
 
-import static junit.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
-import org.junit.Test;
+public class PackedArrayUnitTest extends TestCase {
 
-public class PackedArrayUnitTest {
-
-	protected PackedArray<String> createStringArray(int... sizes) {
+	public static Test suite() {
+		TestSuite suite = new TestSuite(PackedArrayUnitTest.class);
+		
+		PackedArray<String> oneDimensionalArray = createStringArray(6);
+		oneDimensionalArray.set("zero", 0);
+		oneDimensionalArray.set("one", 1);
+		oneDimensionalArray.set("two", 2);
+		oneDimensionalArray.set("three", 3);
+		oneDimensionalArray.set("four", 4);
+		oneDimensionalArray.set("five", 5);
+		
+		suite.addTest(MultiDimensionalArrayTester.createTestSuite(oneDimensionalArray, new int[] {6}, new String[] { "zero", "one", "two", "three", "four", "five" } ));
+		
+		return suite;
+	}
+	
+	protected static PackedArray<String> createStringArray(int... sizes) {
 		return new PackedArray<String>(sizes);
 	}
 	
-	@Test
 	public void testElementLayout() {
 		PackedArray<Object> oneDimArray = new PackedArray<Object>(5);
 		assertThat(oneDimArray.computeAddress(0), is(equalTo(0)));
@@ -76,7 +91,6 @@ public class PackedArrayUnitTest {
 		assertThat(threeDimArray.computeAddress(1, 1, 1), is(equalTo(7)));
 	}
 
-	@Test
 	public void testOneDimensionalArray() {
 		MultiDimensionalArray<String> array = createStringArray(6);
 		
@@ -115,7 +129,6 @@ public class PackedArrayUnitTest {
 		accessAndExpectException(IllegalArgumentException.class, array, 0, 0, 0);
 	}
 	
-	@Test
 	public void testTwoDimensionalArray() {
 		MultiDimensionalArray<String> array = createStringArray(3, 3);
 
@@ -196,7 +209,6 @@ public class PackedArrayUnitTest {
 		accessAndExpectException(IllegalArgumentException.class, array, 0, 0, 0);
 	}
 
-	@Test
 	public void testThreeDimensionalArray() {
 		MultiDimensionalArray<String> array = createStringArray(2, 2, 2);
 
