@@ -69,6 +69,12 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-all</artifactId>
+			<version>1.1</version>
+			<scope>test</scope>
+		</dependency>
 		<!-- 
 			google-collect-testfw is not found on any public repository.
 			We can't wait for guava-r10 (which is google-collections successor).

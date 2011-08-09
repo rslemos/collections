@@ -24,7 +24,9 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assume.assumeThat;
 
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -58,7 +60,17 @@ public class MultiDimensionalArrayTester<V> extends TestCase {
 	public void testLength() {
 		assertThat(subject.length(), is(equalTo(sizes)));
 	}
-	
+
+	public void testLengthsAreSecurelyIsolated() {
+		int[] lengths = subject.length();
+
+		assumeThat(lengths.length, is(greaterThan(0)));
+		
+		lengths[0]++;
+		assertThat(lengths, is(not(equalTo(sizes))));
+		assertThat(subject.length(), is(equalTo(sizes)));
+	}
+
 	public void testGetEachElement() {
 		Iterator<int[]> addresses = getAddressIterator();
 		
