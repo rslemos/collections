@@ -72,7 +72,7 @@ public class MultiDimensionalArrayTester<V> extends TestCase {
 	}
 
 	public void testGetEachElement() {
-		Iterator<int[]> addresses = getAddressIterator();
+		Iterator<int[]> addresses = allAddresses();
 		
 		while(addresses.hasNext()) {
 			int[] address = addresses.next();
@@ -81,7 +81,7 @@ public class MultiDimensionalArrayTester<V> extends TestCase {
 	}
 	
 	public void testSetEachElement() {
-		Iterator<int[]> addresses = getAddressIterator();
+		Iterator<int[]> addresses = allAddresses();
 		
 		while(addresses.hasNext()) {
 			int[] address = addresses.next();
@@ -129,7 +129,7 @@ public class MultiDimensionalArrayTester<V> extends TestCase {
 		return address;
 	}
 
-	private Iterator<int[]> getAddressIterator() {
+	private Iterator<int[]> allAddresses() {
 		return new Iterator<int[]>() {
 			int[] next;
 			
