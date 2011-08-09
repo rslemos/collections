@@ -128,6 +128,19 @@ public abstract class PackedArrayUnitTest {
 		assertThat(slice10.length(), is(equalTo(new int[] {2, 1})));
 		assertThat(slice10.get(0, 0), is(equalTo("[1, 0]")));
 		assertThat(slice10.get(1, 0), is(equalTo("[2, 0]")));
+
+		MultiDimensionalArray<String> swap01 = array.swap(0, 1);
+		assertThat(swap01.get(0, 0), is(equalTo("[0, 0]")));
+		assertThat(swap01.get(0, 1), is(equalTo("[1, 0]")));
+		assertThat(swap01.get(0, 2), is(equalTo("[2, 0]")));
+		assertThat(swap01.get(1, 0), is(equalTo("[0, 1]")));
+		assertThat(swap01.get(1, 1), is(equalTo("[1, 1]")));
+		assertThat(swap01.get(1, 2), is(equalTo("[2, 1]")));
+		assertThat(swap01.get(2, 0), is(equalTo("[0, 2]")));
+		assertThat(swap01.get(2, 1), is(equalTo("[1, 2]")));
+		assertThat(swap01.get(2, 2), is(equalTo("[2, 2]")));
+		
+
 		
 		// boundary check
 		accessAndExpectException(ArrayIndexOutOfBoundsException.class, array,  0, -1);

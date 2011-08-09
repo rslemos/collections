@@ -100,6 +100,28 @@ public class PackedArray<T> implements MultiDimensionalArray<T> {
 		return new PackedArray<T>(this.data, newSizes, strides, newOffsets);
 	}
 
+	public PackedArray<T> swap(int dimensionA, int dimensionB) {
+		if (dimensionA < 0 || dimensionA >= sizes.length)
+			throw new IllegalArgumentException("Illegal dimension: " + dimensionB);
+
+		if (dimensionB < 0 || dimensionB >= sizes.length)
+			throw new IllegalArgumentException("Illegal dimension: " + dimensionB);
+		
+		int[] newSizes = sizes.clone();
+		newSizes[dimensionA] = sizes[dimensionB];
+		newSizes[dimensionB] = sizes[dimensionA];
+		
+		int[] newStrides = strides.clone();
+		newStrides[dimensionA] = strides[dimensionB];
+		newStrides[dimensionB] = strides[dimensionA];
+		
+		int[] newOffsets = offsets.clone();
+		newOffsets[dimensionA] = newOffsets[dimensionB];
+		newOffsets[dimensionB] = newOffsets[dimensionA];
+		
+		return new PackedArray<T>(this.data, newSizes, newStrides, newOffsets);
+	}
+	
 	public int[] length() {
 		return sizes.clone();
 	}

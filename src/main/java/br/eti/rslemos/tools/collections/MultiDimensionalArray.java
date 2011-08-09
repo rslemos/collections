@@ -32,4 +32,6 @@ public interface MultiDimensionalArray<T> {
 
 	MultiDimensionalArray<T> slice(int dimension, int from, int to);
 
+	MultiDimensionalArray<T> swap(int dimensionA, int dimensionB);
+
 }
