@@ -20,12 +20,37 @@
  ******************************************************************************/
 package br.eti.rslemos.tools.collections;
 
+import java.util.Arrays;
+
 public class PackedArray<T> implements MultiDimensionalArray<T> {
 	protected final int[] sizes;
 	private final T[] data;
 	
 	private final int[] strides;
 	private final int[] offsets;
+
+	public PackedArray(int... sizes) {
+		this(sizes, computeStrides(sizes), computeOffsets(sizes));
+	}
+
+	private static int[] computeStrides(int[] sizes) {
+		int[] strides = sizes.clone();
+		
+		System.arraycopy(sizes, 1, strides, 0, strides.length - 1);
+		strides[strides.length - 1] = 1;
+		
+		for (int i = strides.length - 1; i > 0; i--) {
+			strides[i-1] *= strides[i];
+		}
+		
+		return strides;
+	}
+
+	private static int[] computeOffsets(int[] sizes) {
+		int[] offsets = sizes.clone();
+		Arrays.fill(offsets, 0);
+		return offsets;
+	}
 
 	@SuppressWarnings("unchecked")
 	protected PackedArray(int[] sizes, int[] strides, int[] offsets) {

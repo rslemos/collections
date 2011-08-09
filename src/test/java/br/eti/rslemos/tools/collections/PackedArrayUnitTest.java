@@ -27,9 +27,54 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-public abstract class PackedArrayUnitTest {
+public class PackedArrayUnitTest {
 
-	protected abstract MultiDimensionalArray<String> createStringArray(int... sizes);
+	protected PackedArray<String> createStringArray(int... sizes) {
+		return new PackedArray<String>(sizes);
+	}
+	
+	@Test
+	public void testElementLayout() {
+		PackedArray<Object> oneDimArray = new PackedArray<Object>(5);
+		assertThat(oneDimArray.computeAddress(0), is(equalTo(0)));
+		assertThat(oneDimArray.computeAddress(1), is(equalTo(1)));
+		assertThat(oneDimArray.computeAddress(2), is(equalTo(2)));
+		assertThat(oneDimArray.computeAddress(3), is(equalTo(3)));
+		assertThat(oneDimArray.computeAddress(4), is(equalTo(4)));
+
+		PackedArray<Object> twoDimArrayBE = new PackedArray<Object>(3, 3);
+		assertThat(twoDimArrayBE.computeAddress(0, 0), is(equalTo(0)));
+		assertThat(twoDimArrayBE.computeAddress(0, 1), is(equalTo(1)));
+		assertThat(twoDimArrayBE.computeAddress(0, 2), is(equalTo(2)));
+		assertThat(twoDimArrayBE.computeAddress(1, 0), is(equalTo(3)));
+		assertThat(twoDimArrayBE.computeAddress(1, 1), is(equalTo(4)));
+		assertThat(twoDimArrayBE.computeAddress(1, 2), is(equalTo(5)));
+		assertThat(twoDimArrayBE.computeAddress(2, 0), is(equalTo(6)));
+		assertThat(twoDimArrayBE.computeAddress(2, 1), is(equalTo(7)));
+		assertThat(twoDimArrayBE.computeAddress(2, 2), is(equalTo(8)));
+		
+		// little-endian
+		PackedArray<Object> twoDimArrayLE = twoDimArrayBE.transpose();
+		assertThat(twoDimArrayLE.computeAddress(0, 0), is(equalTo(0)));
+		assertThat(twoDimArrayLE.computeAddress(1, 0), is(equalTo(1)));
+		assertThat(twoDimArrayLE.computeAddress(2, 0), is(equalTo(2)));
+		assertThat(twoDimArrayLE.computeAddress(0, 1), is(equalTo(3)));
+		assertThat(twoDimArrayLE.computeAddress(1, 1), is(equalTo(4)));
+		assertThat(twoDimArrayLE.computeAddress(2, 1), is(equalTo(5)));
+		assertThat(twoDimArrayLE.computeAddress(0, 2), is(equalTo(6)));
+		assertThat(twoDimArrayLE.computeAddress(1, 2), is(equalTo(7)));
+		assertThat(twoDimArrayLE.computeAddress(2, 2), is(equalTo(8)));
+		
+		PackedArray<Object> threeDimArray = new PackedArray<Object>(2, 2, 2);
+		assertThat(threeDimArray.computeAddress(0, 0, 0), is(equalTo(0)));
+		assertThat(threeDimArray.computeAddress(0, 0, 1), is(equalTo(1)));
+		assertThat(threeDimArray.computeAddress(0, 1, 0), is(equalTo(2)));
+		assertThat(threeDimArray.computeAddress(0, 1, 1), is(equalTo(3)));
+		assertThat(threeDimArray.computeAddress(1, 0, 0), is(equalTo(4)));
+		assertThat(threeDimArray.computeAddress(1, 0, 1), is(equalTo(5)));
+		assertThat(threeDimArray.computeAddress(1, 1, 0), is(equalTo(6)));
+		assertThat(threeDimArray.computeAddress(1, 1, 1), is(equalTo(7)));
+	}
 
 	@Test
 	public void testOneDimensionalArray() {
