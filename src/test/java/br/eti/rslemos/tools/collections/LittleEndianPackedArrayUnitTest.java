@@ -43,15 +43,6 @@ public class LittleEndianPackedArrayUnitTest extends PackedArrayUnitTest {
 		assertThat(oneDimArray.computeAddress(4), is(equalTo(4)));
 
 		LittleEndianPackedArray<Object> twoDimArray = new LittleEndianPackedArray<Object>(3, 3);
-		assertThat(twoDimArray.computeAddress(0, 0), is(equalTo(0)));
-		assertThat(twoDimArray.computeAddress(1, 0), is(equalTo(1)));
-		assertThat(twoDimArray.computeAddress(2, 0), is(equalTo(2)));
-		assertThat(twoDimArray.computeAddress(0, 1), is(equalTo(3)));
-		assertThat(twoDimArray.computeAddress(1, 1), is(equalTo(4)));
-		assertThat(twoDimArray.computeAddress(2, 1), is(equalTo(5)));
-		assertThat(twoDimArray.computeAddress(0, 2), is(equalTo(6)));
-		assertThat(twoDimArray.computeAddress(1, 2), is(equalTo(7)));
-		assertThat(twoDimArray.computeAddress(2, 2), is(equalTo(8)));
 
 		LittleEndianPackedArray<Object> threeDimArray = new LittleEndianPackedArray<Object>(2, 2, 2);
 		assertThat(threeDimArray.computeAddress(0, 0, 0), is(equalTo(0)));

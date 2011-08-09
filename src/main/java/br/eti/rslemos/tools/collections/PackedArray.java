@@ -121,12 +121,29 @@ public class PackedArray<T> implements MultiDimensionalArray<T> {
 		
 		return new PackedArray<T>(this.data, newSizes, newStrides, newOffsets);
 	}
-	
+
+	public PackedArray<T> transpose() {
+		return new PackedArray<T>(this.data, 
+				reverse(sizes.clone()), 
+				reverse(strides.clone()), 
+				reverse(offsets.clone()));
+	}
+
 	public int[] length() {
 		return sizes.clone();
 	}
 
 	public int dimensions() {
 		return sizes.length;
+	}
+	
+	private static int[] reverse(int[] is) {
+		for (int i = 0; i < is.length/2; i++) {
+			is[i] ^= is[is.length - i - 1];
+			is[is.length - i - 1] ^= is[i];
+			is[i] ^= is[is.length - i - 1];
+		}
+		
+		return is;
 	}
 }

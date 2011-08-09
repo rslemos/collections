@@ -35,25 +35,37 @@ public class BigEndianPackedArrayUnitTest extends PackedArrayUnitTest {
 	
 	@Test
 	public void testElementLayout() {
-		BigEndianPackedArray<Object> oneDimArray = new BigEndianPackedArray<Object>(5);
+		PackedArray<Object> oneDimArray = new BigEndianPackedArray<Object>(5);
 		assertThat(oneDimArray.computeAddress(0), is(equalTo(0)));
 		assertThat(oneDimArray.computeAddress(1), is(equalTo(1)));
 		assertThat(oneDimArray.computeAddress(2), is(equalTo(2)));
 		assertThat(oneDimArray.computeAddress(3), is(equalTo(3)));
 		assertThat(oneDimArray.computeAddress(4), is(equalTo(4)));
 
-		BigEndianPackedArray<Object> twoDimArray = new BigEndianPackedArray<Object>(3, 3);
-		assertThat(twoDimArray.computeAddress(0, 0), is(equalTo(0)));
-		assertThat(twoDimArray.computeAddress(0, 1), is(equalTo(1)));
-		assertThat(twoDimArray.computeAddress(0, 2), is(equalTo(2)));
-		assertThat(twoDimArray.computeAddress(1, 0), is(equalTo(3)));
-		assertThat(twoDimArray.computeAddress(1, 1), is(equalTo(4)));
-		assertThat(twoDimArray.computeAddress(1, 2), is(equalTo(5)));
-		assertThat(twoDimArray.computeAddress(2, 0), is(equalTo(6)));
-		assertThat(twoDimArray.computeAddress(2, 1), is(equalTo(7)));
-		assertThat(twoDimArray.computeAddress(2, 2), is(equalTo(8)));
-
-		BigEndianPackedArray<Object> threeDimArray = new BigEndianPackedArray<Object>(2, 2, 2);
+		PackedArray<Object> twoDimArrayBE = new BigEndianPackedArray<Object>(3, 3);
+		assertThat(twoDimArrayBE.computeAddress(0, 0), is(equalTo(0)));
+		assertThat(twoDimArrayBE.computeAddress(0, 1), is(equalTo(1)));
+		assertThat(twoDimArrayBE.computeAddress(0, 2), is(equalTo(2)));
+		assertThat(twoDimArrayBE.computeAddress(1, 0), is(equalTo(3)));
+		assertThat(twoDimArrayBE.computeAddress(1, 1), is(equalTo(4)));
+		assertThat(twoDimArrayBE.computeAddress(1, 2), is(equalTo(5)));
+		assertThat(twoDimArrayBE.computeAddress(2, 0), is(equalTo(6)));
+		assertThat(twoDimArrayBE.computeAddress(2, 1), is(equalTo(7)));
+		assertThat(twoDimArrayBE.computeAddress(2, 2), is(equalTo(8)));
+		
+		// little-endian
+		PackedArray<Object> twoDimArrayLE = twoDimArrayBE.transpose();
+		assertThat(twoDimArrayLE.computeAddress(0, 0), is(equalTo(0)));
+		assertThat(twoDimArrayLE.computeAddress(1, 0), is(equalTo(1)));
+		assertThat(twoDimArrayLE.computeAddress(2, 0), is(equalTo(2)));
+		assertThat(twoDimArrayLE.computeAddress(0, 1), is(equalTo(3)));
+		assertThat(twoDimArrayLE.computeAddress(1, 1), is(equalTo(4)));
+		assertThat(twoDimArrayLE.computeAddress(2, 1), is(equalTo(5)));
+		assertThat(twoDimArrayLE.computeAddress(0, 2), is(equalTo(6)));
+		assertThat(twoDimArrayLE.computeAddress(1, 2), is(equalTo(7)));
+		assertThat(twoDimArrayLE.computeAddress(2, 2), is(equalTo(8)));
+		
+		PackedArray<Object> threeDimArray = new BigEndianPackedArray<Object>(2, 2, 2);
 		assertThat(threeDimArray.computeAddress(0, 0, 0), is(equalTo(0)));
 		assertThat(threeDimArray.computeAddress(0, 0, 1), is(equalTo(1)));
 		assertThat(threeDimArray.computeAddress(0, 1, 0), is(equalTo(2)));

@@ -140,8 +140,6 @@ public abstract class PackedArrayUnitTest {
 		assertThat(swap01.get(2, 1), is(equalTo("[1, 2]")));
 		assertThat(swap01.get(2, 2), is(equalTo("[2, 2]")));
 		
-
-		
 		// boundary check
 		accessAndExpectException(ArrayIndexOutOfBoundsException.class, array,  0, -1);
 		accessAndExpectException(ArrayIndexOutOfBoundsException.class, array, -1,  0);
@@ -180,6 +178,11 @@ public abstract class PackedArrayUnitTest {
 		assertThat(array.get(1, 1, 0), is(equalTo("[1, 1, 0]")));
 		assertThat(array.get(1, 1, 1), is(equalTo("[1, 1, 1]")));
 		
+		// transposition
+		MultiDimensionalArray<String> transposition = array.transpose();
+		MultiDimensionalArray<String> swap02 = array.swap(0, 2);
+		assertThatTheyAreEquals(transposition, swap02);
+		
 		// boundary check
 		accessAndExpectException(ArrayIndexOutOfBoundsException.class, array,  0,  0, -1);
 		accessAndExpectException(ArrayIndexOutOfBoundsException.class, array,  0, -1,  0);
@@ -191,6 +194,10 @@ public abstract class PackedArrayUnitTest {
 		accessAndExpectException(IllegalArgumentException.class, array);
 		accessAndExpectException(IllegalArgumentException.class, array, 0);
 		accessAndExpectException(IllegalArgumentException.class, array, 0, 0);
+	}
+
+	private static void assertThatTheyAreEquals(MultiDimensionalArray<String> a, MultiDimensionalArray<String> b) {
+		assertThat(a.length(), is(equalTo(b.length())));
 	}
 
 	private static <E extends RuntimeException> void accessAndExpectException(Class<E> clazz, MultiDimensionalArray<String> array, int... pos) {

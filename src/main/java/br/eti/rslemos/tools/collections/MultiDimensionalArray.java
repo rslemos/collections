@@ -34,4 +34,6 @@ public interface MultiDimensionalArray<T> {
 
 	MultiDimensionalArray<T> swap(int dimensionA, int dimensionB);
 
+	MultiDimensionalArray<T> transpose();
+
 }
