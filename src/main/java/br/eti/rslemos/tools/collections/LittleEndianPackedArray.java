@@ -20,23 +20,30 @@
  ******************************************************************************/
 package br.eti.rslemos.tools.collections;
 
+import java.util.Arrays;
+
 public class LittleEndianPackedArray<T> extends PackedArray<T> {
 
 	public LittleEndianPackedArray(int... sizes) {
-		super(sizes);
+		super(sizes, computeStrides(sizes), computeOffsets(sizes));
 	}
 
-	@Override
-	protected int computeAddress(int... pos) {
-		int address = 0;
-		int stride = 1;
+	private static int[] computeStrides(int[] sizes) {
+		int[] strides = sizes.clone();
 		
-		for (int i = 0; i < pos.length; i++) {
-			address += pos[i] * stride;
-			stride *= sizes[i];
+		System.arraycopy(sizes, 0, strides, 1, strides.length - 1);
+		strides[0] = 1;
+		
+		for (int i = 1; i < strides.length; i++) {
+			strides[i] *= strides[i-1];
 		}
 		
-		return address;
+		return strides;
 	}
 
+	private static int[] computeOffsets(int[] sizes) {
+		int[] offsets = sizes.clone();
+		Arrays.fill(offsets, 0);
+		return offsets;
+	}
 }

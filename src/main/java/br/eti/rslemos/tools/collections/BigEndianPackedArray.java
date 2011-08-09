@@ -20,23 +20,30 @@
  ******************************************************************************/
 package br.eti.rslemos.tools.collections;
 
+import java.util.Arrays;
+
 public class BigEndianPackedArray<T> extends PackedArray<T> {
 
 	public BigEndianPackedArray(int... sizes) {
-		super(sizes);
+		super(sizes, computeStrides(sizes), computeOffsets(sizes));
 	}
 
-	@Override
-	protected int computeAddress(int... pos) {
-		int address = 0;
-		int stride = 1;
+	private static int[] computeStrides(int[] sizes) {
+		int[] strides = sizes.clone();
 		
-		for (int i = pos.length; i > 0; i--) {
-			address += pos[i-1] * stride;
-			stride *= sizes[i-1];
+		System.arraycopy(sizes, 1, strides, 0, strides.length - 1);
+		strides[strides.length - 1] = 1;
+		
+		for (int i = strides.length - 1; i > 0; i--) {
+			strides[i-1] *= strides[i];
 		}
 		
-		return address;
+		return strides;
 	}
 
+	private static int[] computeOffsets(int[] sizes) {
+		int[] offsets = sizes.clone();
+		Arrays.fill(offsets, 0);
+		return offsets;
+	}
 }

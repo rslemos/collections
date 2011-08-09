@@ -20,17 +20,26 @@
  ******************************************************************************/
 package br.eti.rslemos.tools.collections;
 
-public abstract class PackedArray<T> implements MultiDimensionalArray<T> {
+public class PackedArray<T> implements MultiDimensionalArray<T> {
 	protected final int[] sizes;
-	private T[] data;
+	private final T[] data;
+	
+	private final int[] strides;
+	private final int[] offsets;
 
 	@SuppressWarnings("unchecked")
-	public PackedArray(int... sizes) {
-		this.sizes = sizes;
-		data = (T[]) new Object[computeSize()];
+	protected PackedArray(int[] sizes, int[] strides, int[] offsets) {
+		this((T[]) new Object[computeSize(sizes)], sizes, strides, offsets);
 	}
 	
-	private int computeSize() {
+	private PackedArray(T[] data, int[] sizes, int[] strides, int[] offsets) {
+		this.data = data;
+		this.sizes = sizes;
+		this.strides = strides;
+		this.offsets = offsets;
+	}
+	
+	private static int computeSize(int... sizes) {
 		int result = 1;
 		
 		for (int size : sizes) {
@@ -40,7 +49,16 @@ public abstract class PackedArray<T> implements MultiDimensionalArray<T> {
 		return result;
 	}
 	
-	protected abstract int computeAddress(int... pos);
+	int computeAddress(int... pos) {
+		checkBoundaries(pos);
+		
+		int address = 0;
+		for (int i = 0; i < pos.length; i++) {
+			address += (pos[i] + offsets[i]) * strides[i];
+		}
+		
+		return address;
+	}
 
 	private void checkBoundaries(int[] pos) {
 		if (pos.length != sizes.length)
@@ -53,15 +71,35 @@ public abstract class PackedArray<T> implements MultiDimensionalArray<T> {
 	}
 
 	public T get(int... pos) {
-		checkBoundaries(pos);
 		return data[computeAddress(pos)];
 	}
 
 	public void set(T element, int... pos) {
-		checkBoundaries(pos);
 		data[computeAddress(pos)] = element;
 	}
 	
+	public PackedArray<T> slice(int dimension, int from, int to) {
+		if (dimension < 0 || dimension >= sizes.length)
+			throw new IllegalArgumentException("Illegal dimension: " + dimension);
+		
+		if (from < 0 || from > sizes[dimension])
+			throw new ArrayIndexOutOfBoundsException(from);
+		
+		if (to < 0 || to > sizes[dimension])
+			throw new ArrayIndexOutOfBoundsException(to);
+		
+		if (to < from)
+			throw new ArrayIndexOutOfBoundsException();
+		
+		int[] newSizes = sizes.clone();
+		newSizes[dimension] = to - from;
+		
+		int[] newOffsets = offsets.clone();
+		newOffsets[dimension] += from;
+		
+		return new PackedArray<T>(this.data, newSizes, strides, newOffsets);
+	}
+
 	public int[] length() {
 		return sizes.clone();
 	}

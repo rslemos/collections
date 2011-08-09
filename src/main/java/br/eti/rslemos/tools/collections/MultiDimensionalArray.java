@@ -30,4 +30,6 @@ public interface MultiDimensionalArray<T> {
 
 	int dimensions();
 
+	MultiDimensionalArray<T> slice(int dimension, int from, int to);
+
 }

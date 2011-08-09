@@ -54,6 +54,13 @@ public abstract class PackedArrayUnitTest {
 		assertThat(array.get(4), is(equalTo("[4]")));
 		assertThat(array.get(5), is(equalTo("[5]")));
 		
+		// views
+		MultiDimensionalArray<String> slice = array.slice(0, 2, 5);
+		assertThat(slice.length(), is(equalTo(new int[] {3})));
+		assertThat(slice.get(0), is(equalTo("[2]")));
+		assertThat(slice.get(1), is(equalTo("[3]")));
+		assertThat(slice.get(2), is(equalTo("[4]")));
+		
 		// boundary check
 		accessAndExpectException(ArrayIndexOutOfBoundsException.class, array, -1);
 		accessAndExpectException(ArrayIndexOutOfBoundsException.class, array,  6);
@@ -91,6 +98,36 @@ public abstract class PackedArrayUnitTest {
 		assertThat(array.get(2, 0), is(equalTo("[2, 0]")));
 		assertThat(array.get(2, 1), is(equalTo("[2, 1]")));
 		assertThat(array.get(2, 2), is(equalTo("[2, 2]")));
+		
+		// views
+		// 0th
+		MultiDimensionalArray<String> slice0 = array.slice(0, 1, 3);
+		assertThat(slice0.length(), is(equalTo(new int[] {2, 3})));
+		assertThat(slice0.get(0, 0), is(equalTo("[1, 0]")));
+		assertThat(slice0.get(0, 1), is(equalTo("[1, 1]")));
+		assertThat(slice0.get(0, 2), is(equalTo("[1, 2]")));
+		assertThat(slice0.get(1, 0), is(equalTo("[2, 0]")));
+		assertThat(slice0.get(1, 1), is(equalTo("[2, 1]")));
+		assertThat(slice0.get(1, 2), is(equalTo("[2, 2]")));
+
+		// 1st
+		MultiDimensionalArray<String> slice1 = array.slice(1, 1, 2);
+		assertThat(slice1.length(), is(equalTo(new int[] {3, 1})));
+		assertThat(slice1.get(0, 0), is(equalTo("[0, 1]")));
+		assertThat(slice1.get(1, 0), is(equalTo("[1, 1]")));
+		assertThat(slice1.get(2, 0), is(equalTo("[2, 1]")));
+		
+		// compose 0th + 1st
+		MultiDimensionalArray<String> slice01 = array.slice(0, 1, 3).slice(1, 1, 2);
+		assertThat(slice01.length(), is(equalTo(new int[] {2, 1})));
+		assertThat(slice01.get(0, 0), is(equalTo("[1, 1]")));
+		assertThat(slice01.get(1, 0), is(equalTo("[2, 1]")));
+		
+		// compose 1st + 0th
+		MultiDimensionalArray<String> slice10 = array.slice(1, 0, 1).slice(0, 1, 3);
+		assertThat(slice10.length(), is(equalTo(new int[] {2, 1})));
+		assertThat(slice10.get(0, 0), is(equalTo("[1, 0]")));
+		assertThat(slice10.get(1, 0), is(equalTo("[2, 0]")));
 		
 		// boundary check
 		accessAndExpectException(ArrayIndexOutOfBoundsException.class, array,  0, -1);
