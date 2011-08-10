@@ -96,7 +96,17 @@ public class MultiDimensionalArrayTester<V> extends TestCase {
 			int[] address = addresses.next();
 			V modelData = getModelData(model, address);
 			
-			V newData = getModelData(model, invert(address));
+			int[] invAddress = invert(address);
+			if (Arrays.equals(address, invAddress)) {
+				// If the dimensions are all odd, then there will exist
+				// a central cell whose address and inverted address will
+				// be the same. Since we must test *ALL* cells, let's
+				// change it for the zero address. Of course, this will
+				// still fail if all dimensions are of length 1.
+				Arrays.fill(invAddress, 0);
+			}
+			
+			V newData = getModelData(model, invAddress);
 			V oldData = subject.get(address);
 			
 			assertThat(newData, is(not(equalTo(modelData))));
@@ -130,11 +140,12 @@ public class MultiDimensionalArrayTester<V> extends TestCase {
 	@SuppressWarnings("unchecked")
 	private V getModelData(Object[] model, int... pos) {
 		Object[] last = model;
-		for (int i = 0; i < pos.length - 1; i++) {
-			last = (Object[]) model[pos[i]];
+		int i;
+		for (i = 0; i < pos.length - 1; i++) {
+			last = (Object[]) last[pos[i]];
 		}
 		
-		return (V) last[pos[pos.length - 1]];
+		return (V) last[pos[i]];
 	}
 
 	private int[] invert(int[] address) {
@@ -246,7 +257,7 @@ public class MultiDimensionalArrayTester<V> extends TestCase {
 				throw new NoSuchElementException();
 			
 			try {
-				return next;
+				return next.clone();
 			} finally {
 				computeNextAddress();
 			}

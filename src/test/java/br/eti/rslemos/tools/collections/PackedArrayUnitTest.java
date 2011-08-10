@@ -32,23 +32,123 @@ public class PackedArrayUnitTest extends TestCase {
 	public static Test suite() {
 		TestSuite suite = new TestSuite(PackedArrayUnitTest.class);
 		
-		PackedArray<String> oneDimensionalArray = createStringArray(6);
-		oneDimensionalArray.set("zero", 0);
-		oneDimensionalArray.set("one", 1);
-		oneDimensionalArray.set("two", 2);
-		oneDimensionalArray.set("three", 3);
-		oneDimensionalArray.set("four", 4);
-		oneDimensionalArray.set("five", 5);
-		
-		suite.addTest(MultiDimensionalArrayTester.createTestSuite(oneDimensionalArray, new int[] {6}, new String[] { "zero", "one", "two", "three", "four", "five" } ));
+		suite.addTest(forOneDimension());
+		suite.addTest(forTwoDimensions());
+		suite.addTest(forThreeDimensions());
+		suite.addTest(forFourDimensions());
+		suite.addTest(forFiveDimensions());
 		
 		return suite;
 	}
-	
-	protected static PackedArray<String> createStringArray(int... sizes) {
-		return new PackedArray<String>(sizes);
+
+	private static TestSuite forOneDimension() {
+		int[] sizes = new int[] {6};
+		
+		PackedArray<String> array = new PackedArray<String>(sizes);
+		array.set("[0]", 0);
+		array.set("[1]", 1);
+		array.set("[2]", 2);
+		array.set("[3]", 3);
+		array.set("[4]", 4);
+		array.set("[5]", 5);
+		
+		String[] model = new String[] {"[0]", "[1]", "[2]", "[3]", "[4]", "[5]"};
+		
+		return MultiDimensionalArrayTester.createTestSuite(array, sizes, model);
 	}
 	
+	private static TestSuite forTwoDimensions() {
+		int[] sizes = new int[] {3, 4};
+		
+		PackedArray<String> array = new PackedArray<String>(sizes);
+		array.set("[0, 0]", 0, 0);
+		array.set("[0, 1]", 0, 1);
+		array.set("[0, 2]", 0, 2);
+		array.set("[0, 3]", 0, 3);
+		array.set("[1, 0]", 1, 0);
+		array.set("[1, 1]", 1, 1);
+		array.set("[1, 2]", 1, 2);
+		array.set("[1, 3]", 1, 3);
+		array.set("[2, 0]", 2, 0);
+		array.set("[2, 1]", 2, 1);
+		array.set("[2, 2]", 2, 2);
+		array.set("[2, 3]", 2, 3);
+		
+		String[][] model = new String[][] {
+				{ "[0, 0]", "[0, 1]", "[0, 2]", "[0, 3]" },
+				{ "[1, 0]", "[1, 1]", "[1, 2]", "[1, 3]" },
+				{ "[2, 0]", "[2, 1]", "[2, 2]", "[2, 3]" },
+			};
+		
+		return MultiDimensionalArrayTester.createTestSuite(array, sizes, model);
+	}
+
+	private static TestSuite forThreeDimensions() {
+		int[] sizes = new int[] {4, 2, 3};
+		
+		PackedArray<String> array = new PackedArray<String>(sizes);
+		String[][][] model = new String[4][2][3];
+		
+		for(int i = 0; i < sizes[0]; i++) {
+			for(int j = 0; j < sizes[1]; j++) {
+				for(int k = 0; k < sizes[2]; k++) {
+					String data = "[" + i + ", " + j + ", " + k + "]"; 
+					
+					model[i][j][k] = data;
+					array.set(data, i, j, k);
+				}
+			}
+		}
+		
+		return MultiDimensionalArrayTester.createTestSuite(array, sizes, model);
+	}
+
+	private static TestSuite forFourDimensions() {
+		int[] sizes = new int[] {3, 5, 7, 9};
+		
+		PackedArray<String> array = new PackedArray<String>(sizes);
+		String[][][][] model = new String[3][5][7][9];
+		
+		for(int i = 0; i < sizes[0]; i++) {
+			for(int j = 0; j < sizes[1]; j++) {
+				for(int k = 0; k < sizes[2]; k++) {
+					for(int l = 0; l < sizes[3]; l++) {
+						String data = "[" + i + ", " + j + ", " + k + ", " + l + "]"; 
+						
+						model[i][j][k][l] = data;
+						array.set(data, i, j, k, l);
+					}
+				}
+			}
+		}
+		
+		return MultiDimensionalArrayTester.createTestSuite(array, sizes, model);
+	}
+
+	private static TestSuite forFiveDimensions() {
+		int[] sizes = new int[] {1, 2, 3, 4, 5};
+		
+		PackedArray<String> array = new PackedArray<String>(sizes);
+		String[][][][][] model = new String[1][2][3][4][5];
+		
+		for(int i = 0; i < sizes[0]; i++) {
+			for(int j = 0; j < sizes[1]; j++) {
+				for(int k = 0; k < sizes[2]; k++) {
+					for(int l = 0; l < sizes[3]; l++) {
+						for(int m = 0; m < sizes[4]; m++) {
+							String data = "[" + i + ", " + j + ", " + k + ", " + l + ", " + m + "]"; 
+							
+							model[i][j][k][l][m] = data;
+							array.set(data, i, j, k, l, m);
+						}
+					}
+				}
+			}
+		}
+		
+		return MultiDimensionalArrayTester.createTestSuite(array, sizes, model);
+	}
+
 	public void testElementLayout() {
 		PackedArray<Object> oneDimArray = new PackedArray<Object>(5);
 		assertThat(oneDimArray.computeAddress(0), is(equalTo(0)));
@@ -92,13 +192,9 @@ public class PackedArrayUnitTest extends TestCase {
 	}
 
 	public void testOneDimensionalArray() {
-		MultiDimensionalArray<String> array = createStringArray(6);
+		int[] sizes = { 6 };
+		MultiDimensionalArray<String> array = new PackedArray<String>(sizes);
 		
-		// info
-		assertThat(array.dimensions(), is(equalTo(1)));
-		assertThat(array.length(), is(equalTo(new int[] {6})));
-		
-		// storage
 		array.set("[0]", 0);
 		array.set("[1]", 1);
 		array.set("[2]", 2);
@@ -106,37 +202,18 @@ public class PackedArrayUnitTest extends TestCase {
 		array.set("[4]", 4);
 		array.set("[5]", 5);
 		
-		assertThat(array.get(0), is(equalTo("[0]")));
-		assertThat(array.get(1), is(equalTo("[1]")));
-		assertThat(array.get(2), is(equalTo("[2]")));
-		assertThat(array.get(3), is(equalTo("[3]")));
-		assertThat(array.get(4), is(equalTo("[4]")));
-		assertThat(array.get(5), is(equalTo("[5]")));
-		
 		// views
 		MultiDimensionalArray<String> slice = array.slice(0, 2, 5);
 		assertThat(slice.length(), is(equalTo(new int[] {3})));
 		assertThat(slice.get(0), is(equalTo("[2]")));
 		assertThat(slice.get(1), is(equalTo("[3]")));
 		assertThat(slice.get(2), is(equalTo("[4]")));
-		
-		// boundary check
-		accessAndExpectException(ArrayIndexOutOfBoundsException.class, array, -1);
-		accessAndExpectException(ArrayIndexOutOfBoundsException.class, array,  6);
-		
-		accessAndExpectException(IllegalArgumentException.class, array);
-		accessAndExpectException(IllegalArgumentException.class, array, 0, 0);
-		accessAndExpectException(IllegalArgumentException.class, array, 0, 0, 0);
 	}
 	
 	public void testTwoDimensionalArray() {
-		MultiDimensionalArray<String> array = createStringArray(3, 3);
+		int[] sizes = { 3, 3 };
+		MultiDimensionalArray<String> array = new PackedArray<String>(sizes);
 
-		// info
-		assertThat(array.dimensions(), is(equalTo(2)));
-		assertThat(array.length(), is(equalTo(new int[] {3, 3})));
-		
-		// storage
 		array.set("[0, 0]", 0, 0);
 		array.set("[0, 1]", 0, 1);
 		array.set("[0, 2]", 0, 2);
@@ -146,16 +223,6 @@ public class PackedArrayUnitTest extends TestCase {
 		array.set("[2, 0]", 2, 0);
 		array.set("[2, 1]", 2, 1);
 		array.set("[2, 2]", 2, 2);
-		
-		assertThat(array.get(0, 0), is(equalTo("[0, 0]")));
-		assertThat(array.get(0, 1), is(equalTo("[0, 1]")));
-		assertThat(array.get(0, 2), is(equalTo("[0, 2]")));
-		assertThat(array.get(1, 0), is(equalTo("[1, 0]")));
-		assertThat(array.get(1, 1), is(equalTo("[1, 1]")));
-		assertThat(array.get(1, 2), is(equalTo("[1, 2]")));
-		assertThat(array.get(2, 0), is(equalTo("[2, 0]")));
-		assertThat(array.get(2, 1), is(equalTo("[2, 1]")));
-		assertThat(array.get(2, 2), is(equalTo("[2, 2]")));
 		
 		// views
 		// 0th
@@ -197,88 +264,19 @@ public class PackedArrayUnitTest extends TestCase {
 		assertThat(swap01.get(2, 0), is(equalTo("[0, 2]")));
 		assertThat(swap01.get(2, 1), is(equalTo("[1, 2]")));
 		assertThat(swap01.get(2, 2), is(equalTo("[2, 2]")));
-		
-		// boundary check
-		accessAndExpectException(ArrayIndexOutOfBoundsException.class, array,  0, -1);
-		accessAndExpectException(ArrayIndexOutOfBoundsException.class, array, -1,  0);
-		accessAndExpectException(ArrayIndexOutOfBoundsException.class, array,  0,  3);
-		accessAndExpectException(ArrayIndexOutOfBoundsException.class, array,  3,  0);
-		
-		accessAndExpectException(IllegalArgumentException.class, array);
-		accessAndExpectException(IllegalArgumentException.class, array, 0);
-		accessAndExpectException(IllegalArgumentException.class, array, 0, 0, 0);
 	}
 
 	public void testThreeDimensionalArray() {
-		MultiDimensionalArray<String> array = createStringArray(2, 2, 2);
+		int[] sizes = { 2, 2, 2 };
+		MultiDimensionalArray<String> array = new PackedArray<String>(sizes);
 
-		// info
-		assertThat(array.dimensions(), is(equalTo(3)));
-		assertThat(array.length(), is(equalTo(new int[] {2, 2, 2})));
-
-		// storage
-		array.set("[0, 0, 0]", 0, 0, 0);
-		array.set("[0, 0, 1]", 0, 0, 1);
-		array.set("[0, 1, 0]", 0, 1, 0);
-		array.set("[0, 1, 1]", 0, 1, 1);
-		array.set("[1, 0, 0]", 1, 0, 0);
-		array.set("[1, 0, 1]", 1, 0, 1);
-		array.set("[1, 1, 0]", 1, 1, 0);
-		array.set("[1, 1, 1]", 1, 1, 1);
-		
-		assertThat(array.get(0, 0, 0), is(equalTo("[0, 0, 0]")));
-		assertThat(array.get(0, 0, 1), is(equalTo("[0, 0, 1]")));
-		assertThat(array.get(0, 1, 0), is(equalTo("[0, 1, 0]")));
-		assertThat(array.get(0, 1, 1), is(equalTo("[0, 1, 1]")));
-		assertThat(array.get(1, 0, 0), is(equalTo("[1, 0, 0]")));
-		assertThat(array.get(1, 0, 1), is(equalTo("[1, 0, 1]")));
-		assertThat(array.get(1, 1, 0), is(equalTo("[1, 1, 0]")));
-		assertThat(array.get(1, 1, 1), is(equalTo("[1, 1, 1]")));
-		
 		// transposition
 		MultiDimensionalArray<String> transposition = array.transpose();
 		MultiDimensionalArray<String> swap02 = array.swap(0, 2);
 		assertThatTheyAreEquals(transposition, swap02);
-		
-		// boundary check
-		accessAndExpectException(ArrayIndexOutOfBoundsException.class, array,  0,  0, -1);
-		accessAndExpectException(ArrayIndexOutOfBoundsException.class, array,  0, -1,  0);
-		accessAndExpectException(ArrayIndexOutOfBoundsException.class, array, -1,  0,  0);
-		accessAndExpectException(ArrayIndexOutOfBoundsException.class, array,  0,  0,  3);
-		accessAndExpectException(ArrayIndexOutOfBoundsException.class, array,  0,  3,  0);
-		accessAndExpectException(ArrayIndexOutOfBoundsException.class, array,  3,  0,  0);
-		
-		accessAndExpectException(IllegalArgumentException.class, array);
-		accessAndExpectException(IllegalArgumentException.class, array, 0);
-		accessAndExpectException(IllegalArgumentException.class, array, 0, 0);
 	}
 
 	private static void assertThatTheyAreEquals(MultiDimensionalArray<String> a, MultiDimensionalArray<String> b) {
 		assertThat(a.length(), is(equalTo(b.length())));
-	}
-
-	private static <E extends RuntimeException> void accessAndExpectException(Class<E> clazz, MultiDimensionalArray<String> array, int... pos) {
-		getAndExpectException(clazz, array, pos);
-		setAndExpectException(clazz, array, pos);
-	}
-
-	private static <E extends RuntimeException> void setAndExpectException(Class<E> clazz, MultiDimensionalArray<String> array, int... pos) {
-		try {
-			array.set(null, pos);
-			fail("Should have thrown " + clazz);
-		} catch (RuntimeException expected) {
-			if (!clazz.isInstance(expected))
-				throw expected;
-		}
-	}
-
-	private static <E extends RuntimeException> void getAndExpectException(Class<E> clazz, MultiDimensionalArray<String> array, int... pos) {
-		try {
-			array.get(pos);
-			fail("Should have thrown " + clazz);
-		} catch (RuntimeException expected) {
-			if (!clazz.isInstance(expected))
-				throw expected;
-		}
 	}
 }
