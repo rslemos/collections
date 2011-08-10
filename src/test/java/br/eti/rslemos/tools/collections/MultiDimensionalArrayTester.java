@@ -96,17 +96,7 @@ public class MultiDimensionalArrayTester<V> extends TestCase {
 			int[] address = addresses.next();
 			V modelData = getModelData(model, address);
 			
-			int[] invAddress = invert(address);
-			if (Arrays.equals(address, invAddress)) {
-				// If the dimensions are all odd, then there will exist
-				// a central cell whose address and inverted address will
-				// be the same. Since we must test *ALL* cells, let's
-				// change it for the zero address. Of course, this will
-				// still fail if all dimensions are of length 1.
-				Arrays.fill(invAddress, 0);
-			}
-			
-			V newData = getModelData(model, invAddress);
+			V newData = getModelData(model, invert(address));
 			V oldData = subject.get(address);
 			
 			assertThat(newData, is(not(equalTo(modelData))));
@@ -126,6 +116,34 @@ public class MultiDimensionalArrayTester<V> extends TestCase {
 		}
 	}
 
+	public void testCellIndependency() {
+		Iterator<int[]> targetAddresses = allAddresses();
+		
+		while(targetAddresses.hasNext()) {
+			int[] targetAddress = targetAddresses.next();
+			
+			// swap targetAddress and invert(targetAddress);
+			V data0 = subject.get(invert(targetAddress));
+			V data1 = subject.set(data0, targetAddress);
+			subject.set(data1, invert(targetAddress));
+			
+			try {
+				Iterator<int[]> addresses = allAddresses();
+				while(addresses.hasNext()) {
+					int[] address = addresses.next();
+					
+					// skip targetAddress
+					if (!Arrays.equals(address, targetAddress) && !Arrays.equals(invert(address), targetAddress)) {
+						assertThat(subject.get(address), is(not(sameInstance(data0))));
+					}
+				}
+			} finally {
+				subject.set(data1, targetAddress);
+				subject.set(data0, invert(targetAddress));
+			}
+		}
+	}
+	
 	public void testSimpleStorage() {
 		// try to store and get back <0, 0, ...>
 		int[] pos = sizes.clone();
@@ -148,13 +166,21 @@ public class MultiDimensionalArrayTester<V> extends TestCase {
 		return (V) last[pos[i]];
 	}
 
-	private int[] invert(int[] address) {
-		address = address.clone();
+	private int[] invert(int[] address0) {
+		int[] address = address0.clone();
 		
 		for (int i = 0; i < address.length; i++) {
 			address[i] = sizes[i] - address[i] - 1;
 		}
 		
+		if (Arrays.equals(address, address0)) {
+			// If the dimensions are all odd, then there will exist
+			// a central cell whose address and inverted address will
+			// be the same. Since we must test *ALL* cells, let's
+			// change it for the zero address. Of course, this will
+			// still fail if all dimensions are of length 1.
+			Arrays.fill(address, 0);
+		}
 		return address;
 	}
 
