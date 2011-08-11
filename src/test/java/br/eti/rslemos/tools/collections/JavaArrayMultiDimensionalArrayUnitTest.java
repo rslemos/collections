@@ -73,4 +73,44 @@ public class JavaArrayMultiDimensionalArrayUnitTest {
 		setAndExpect(IllegalArgumentException.class, array, "");
 		setAndExpect(IllegalArgumentException.class, array, "", 0, 0);
 	}
+	
+	@Test
+	public void testTwoDimensionArray() {
+		String[][] javaArray = new String[][] { { "old00", "old01" }, { "old10", "old11" } };
+		MultiDimensionalArray<String> array = new JavaArrayMultiDimensionalArray<String>(javaArray, new int[] {2, 2});
+		
+		assertThat(array.dimensions(), is(equalTo(2)));
+		assertThat(array.length(), is(equalTo(new int[] {2, 2})));
+		
+		assertThat(array.get(0, 0), is(equalTo("old00")));
+		assertThat(array.set("data00", 0, 0), is(equalTo("old00")));
+		assertThat(array.get(0, 0), is(equalTo("data00")));
+		
+		assertThat(array.get(0, 1), is(equalTo("old01")));
+		assertThat(array.set("data01", 0, 1), is(equalTo("old01")));
+		assertThat(array.get(0, 1), is(equalTo("data01")));
+		
+		assertThat(array.get(1, 0), is(equalTo("old10")));
+		assertThat(array.set("data10", 1, 0), is(equalTo("old10")));
+		assertThat(array.get(1, 0), is(equalTo("data10")));
+		
+		assertThat(array.get(1, 1), is(equalTo("old11")));
+		assertThat(array.set("data11", 1, 1), is(equalTo("old11")));
+		assertThat(array.get(1, 1), is(equalTo("data11")));
+		
+		getAndExpect(ArrayIndexOutOfBoundsException.class, array, -1,  0);
+		getAndExpect(ArrayIndexOutOfBoundsException.class, array,  0, -1);
+		getAndExpect(ArrayIndexOutOfBoundsException.class, array,  2,  1);
+		getAndExpect(ArrayIndexOutOfBoundsException.class, array,  1,  2);
+		
+		setAndExpect(ArrayIndexOutOfBoundsException.class, array, "", -1,  0);
+		setAndExpect(ArrayIndexOutOfBoundsException.class, array, "",  0, -1);
+		setAndExpect(ArrayIndexOutOfBoundsException.class, array, "",  2,  1);
+		setAndExpect(ArrayIndexOutOfBoundsException.class, array, "",  1,  2);
+
+		getAndExpect(IllegalArgumentException.class, array);
+		getAndExpect(IllegalArgumentException.class, array,  0, 0, 0);
+		setAndExpect(IllegalArgumentException.class, array, "");
+		setAndExpect(IllegalArgumentException.class, array, "", 0, 0, 0);
+	}
 }
