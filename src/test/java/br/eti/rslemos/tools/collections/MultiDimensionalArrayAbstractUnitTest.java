@@ -20,6 +20,8 @@
  ******************************************************************************/
 package br.eti.rslemos.tools.collections;
 
+import static br.eti.rslemos.tools.collections.MultiDimensionalArrays.allAddresses;
+import static br.eti.rslemos.tools.collections.MultiDimensionalArrays.elementWiseEquals;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -29,9 +31,9 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeThat;
 
+import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -79,7 +81,7 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 
 	@Test
 	public void testGetEachElementAtValidAddress() {
-		Iterator<int[]> addresses = allAddresses();
+		Iterator<int[]> addresses = allAddresses(sizes);
 		
 		while(addresses.hasNext()) {
 			int[] address = addresses.next();
@@ -99,7 +101,7 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 
 	@Test
 	public void testSetEachElementAtValidAddress() {
-		Iterator<int[]> addresses = allAddresses();
+		Iterator<int[]> addresses = allAddresses(sizes);
 		
 		while(addresses.hasNext()) {
 			int[] address = addresses.next();
@@ -128,7 +130,7 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 
 	@Test
 	public void testCellIndependency() {
-		Iterator<int[]> targetAddresses = allAddresses();
+		Iterator<int[]> targetAddresses = allAddresses(sizes);
 		
 		while(targetAddresses.hasNext()) {
 			int[] targetAddress = targetAddresses.next();
@@ -137,7 +139,7 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 			V old = subject.set(sample, targetAddress);
 			
 			try {
-				Iterator<int[]> addresses = allAddresses();
+				Iterator<int[]> addresses = allAddresses(sizes);
 				while(addresses.hasNext()) {
 					int[] address = addresses.next();
 					
@@ -152,29 +154,44 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 		}
 	}
 
-	private Iterator<int[]> allAddresses() {
-		return new AddressIterator() {
-			{
-				next = sizes.clone();
-				Arrays.fill(next, 0);
-			}
-			
-			protected void computeNextAddress() {
-				for(int i = next.length - 1; i >= 0; i--) {
-					if (++next[i] < sizes[i]) {
-						return;
-					} else {
-						next[i] = 0;
-					}
-				}
-				
-				next = null;
-			}
-		};
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testConstructorFromItself() {
+		@SuppressWarnings("rawtypes")
+		Class<? extends MultiDimensionalArray> clazz = subject.getClass();
+		
+		@SuppressWarnings("rawtypes")
+		Constructor<? extends MultiDimensionalArray> ctor = null;
+		try {
+			ctor = clazz.getConstructor(MultiDimensionalArray.class);
+		} catch (SecurityException e) {
+			fail("Constructor(MultiDimensionalArray) must be accessible");
+		} catch (NoSuchMethodException e) {
+			fail("Constructor(MultiDimensionalArray) must exist");
+		}
+		
+		MultiDimensionalArray<V> array;
+		try {
+			array = ctor.newInstance(subject);
+		} catch (Exception e) {
+			throw (AssertionError)(new AssertionError("Constructor(MultiDimensionalArray) failed").initCause(e));
+		}
+		
+		assertThat(elementWiseEquals(subject, array), is(equalTo(true)));
+		subject = array;
+		
+		testDimensions();
+		testLength();
+		testLengthsAreSecurelyIsolated();
+		testCellIndependency(); // should be the first to change data, since it is very picky about contents
+		testGetEachElementAtValidAddress();
+		testGetEachElementAlongBoundaryAddress();
+		testSetEachElementAtValidAddress();
+		testSetEachElementAlongBoundaryAddress();
 	}
-
+	
 	private Iterator<int[]> allBoundaryAddresses() {
-		return new AddressIterator() {
+		return new MultiDimensionalArrays.AddressIterator() {
 			{
 				next = sizes.clone();
 				Arrays.fill(next, -1);
@@ -222,31 +239,6 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 		} catch (RuntimeException expected) {
 			if (!clazz.isInstance(expected))
 				throw expected;
-		}
-	}
-
-	private static abstract class AddressIterator implements Iterator<int[]> {
-		protected int[] next;
-
-		public boolean hasNext() {
-			return next != null;
-		}
-
-		public int[] next() {
-			if (!hasNext())
-				throw new NoSuchElementException();
-			
-			try {
-				return next.clone();
-			} finally {
-				computeNextAddress();
-			}
-		}
-
-		protected abstract void computeNextAddress();
-
-		public void remove() {
-			throw new UnsupportedOperationException();
 		}
 	}
 }

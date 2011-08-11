@@ -33,6 +33,17 @@ public class PackedArray<T> implements MultiDimensionalArray<T> {
 		this(sizes, computeStrides(sizes), computeOffsets(sizes));
 	}
 
+	public PackedArray(MultiDimensionalArray<T> init) {
+		if (init instanceof PackedArray) {
+			PackedArray<T> packed = (PackedArray<T>) init;
+			this.data = packed.data.clone();
+			this.sizes = packed.sizes;
+			this.strides = packed.strides;
+			this.offsets = packed.offsets;
+		} else
+			throw new UnsupportedOperationException();
+	}
+	
 	private static int[] computeStrides(int[] sizes) {
 		int[] strides = sizes.clone();
 		
