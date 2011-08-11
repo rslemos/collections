@@ -258,15 +258,73 @@ public class PackedArray<T> implements MultiDimensionalArray<T> {
 			
 			int result = 1;
 	
-			int newPos[] = new int[pos.length + 1];
-			System.arraycopy(pos, 0, newPos, 0, pos.length);
+			pos = appendDimension(pos);
 			
-			for (int i = 0; i < sizes[pos.length]; i++) {
-				newPos[pos.length] = i;
-	            result = 31 * result + hashCode0(newPos);
+			for (int i = 0; i < sizes[pos.length - 1]; i++) {
+				pos[pos.length - 1] = i;
+	            result = 31 * result + hashCode0(pos);
 			}
 	
 	        return result;
 		}
+	}
+
+	@Override
+	public String toString() {
+		if (sizes.length == 0)
+			return "null"; // for consistency with java.util.Arrays.deepToString()
+		
+		StringBuilder buf = new StringBuilder();
+		toString0(buf);
+		return buf.toString();
+	}
+
+	private void toString0(StringBuilder buf, int... pos) {
+		if (pos.length == sizes.length) {
+			// leaf case
+        	T element = get(pos);
+        	
+            if (element instanceof Object[])
+            	buf.append(Arrays.deepToString((Object[]) element));
+            else if (element instanceof byte[])
+            	buf.append(Arrays.toString((byte[]) element));
+            else if (element instanceof short[])
+                buf.append(Arrays.toString((short[]) element));
+            else if (element instanceof int[])
+                buf.append(Arrays.toString((int[]) element));
+            else if (element instanceof long[])
+                buf.append(Arrays.toString((long[]) element));
+            else if (element instanceof char[])
+                buf.append(Arrays.toString((char[]) element));
+            else if (element instanceof float[])
+                buf.append(Arrays.toString((float[]) element));
+            else if (element instanceof double[])
+                buf.append(Arrays.toString((double[]) element));
+            else if (element instanceof boolean[])
+                buf.append(Arrays.toString((boolean[]) element));
+            else 
+            	buf.append(String.valueOf(element));
+		} else {
+			// inner branch case
+			buf.append("[");
+			pos = appendDimension(pos);
+			
+			for (int i = 0; i < sizes[pos.length - 1]; i++) {
+				pos[pos.length - 1] = i;
+				toString0(buf, pos);
+				
+				if (i == sizes[pos.length - 1] - 1)
+					break;
+				
+				buf.append(", ");
+			}
+			buf.append("]");
+		}
+	}
+	
+	private static int[] appendDimension(int... pos) {
+		int newPos[] = new int[pos.length + 1];
+		System.arraycopy(pos, 0, newPos, 0, pos.length);
+		return newPos;
 	}
 }

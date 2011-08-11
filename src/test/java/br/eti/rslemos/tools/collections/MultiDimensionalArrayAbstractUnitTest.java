@@ -205,6 +205,11 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 		assertThat(subject.hashCode(), is(equalTo(Arrays.deepHashCode((Object[]) rawModel))));
 	}
 	
+	@Test
+	public void testToString() {
+		assertThat(subject.toString(), is(equalTo(Arrays.deepToString((Object[]) rawModel))));
+	}
+	
 	private void runAllTests(MultiDimensionalArray<V> array) {
 		subject = array;
 		testDimensions();
