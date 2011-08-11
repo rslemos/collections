@@ -327,4 +327,20 @@ public class PackedArray<T> implements MultiDimensionalArray<T> {
 		System.arraycopy(pos, 0, newPos, 0, pos.length);
 		return newPos;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		
+		if (obj == this)
+			return true;
+
+		if (!(obj instanceof MultiDimensionalArray))
+			return false;
+		
+		MultiDimensionalArray<?> other = (MultiDimensionalArray<?>) obj;
+		
+		return MultiDimensionalArrays.elementWiseEquals(this, other);
+	}
 }

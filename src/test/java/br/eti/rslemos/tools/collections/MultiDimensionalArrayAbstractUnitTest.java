@@ -209,6 +209,51 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 	public void testToString() {
 		assertThat(subject.toString(), is(equalTo(Arrays.deepToString((Object[]) rawModel))));
 	}
+
+	@Test
+	public void testNotEqualsToNull() {
+		assertThat(subject.equals(null), is(equalTo(false)));
+	}
+	
+	@Test
+	public void testEqualsToItself() {
+		assertThat(subject.equals(subject), is(equalTo(true)));
+	}
+
+	@Test
+	public void testEqualsToCopyOfItself() {
+		assertThat(subject.equals(newFromMultiDimensionalArray(subject)), is(equalTo(true)));
+	}
+	
+	@Test
+	public void testNotEqualsToModifiedCopyOfItself() {
+		MultiDimensionalArray<V> copy = newFromMultiDimensionalArray(subject);
+		int[] zero = sizes.clone();
+		Arrays.fill(zero, 0);
+		assumeThat(zero.length, is(greaterThan(0)));
+		copy.set(createSample(), zero);
+		assertThat(subject.equals(copy), is(equalTo(false)));
+	}
+
+	@Test
+	public void testEqualsToModel() {
+		assertThat(subject.equals(model), is(equalTo(true)));
+	}
+	
+	@Test
+	public void testNotEqualsToModifiedModel() {
+		MultiDimensionalArray<V> copy = model;
+		int[] zero = sizes.clone();
+		Arrays.fill(zero, 0);
+		assumeThat(zero.length, is(greaterThan(0)));
+		copy.set(createSample(), zero);
+		assertThat(subject.equals(copy), is(equalTo(false)));
+	}
+	
+	@Test
+	public void testNotEqualsToSomethingElse() {
+		assertThat(subject.equals(new Object()), is(equalTo(false)));
+	}
 	
 	private void runAllTests(MultiDimensionalArray<V> array) {
 		subject = array;

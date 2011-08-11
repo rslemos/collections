@@ -34,7 +34,7 @@ public class MultiDimensionalArrays {
 		return elementWiseEquals(a, b);
 	}
 
-	static <T> boolean elementWiseEquals(MultiDimensionalArray<T> a, MultiDimensionalArray<T> b) {
+	static boolean elementWiseEquals(MultiDimensionalArray<?> a, MultiDimensionalArray<?> b) {
 		if (a.dimensions() != b.dimensions())
 			return false;
 		
@@ -44,8 +44,8 @@ public class MultiDimensionalArrays {
 		Iterator<int[]> addresses = allAddresses(a.length());
 		while(addresses.hasNext()) {
 			int[] address = addresses.next();
-			T elementA = a.get(address);
-			T elementB = b.get(address);
+			Object elementA = a.get(address);
+			Object elementB = b.get(address);
 			
 			if (elementA != null ? !elementA.equals(elementB) : elementB != null)
 				return false;
