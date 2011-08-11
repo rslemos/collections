@@ -28,6 +28,34 @@ import org.junit.Test;
 
 public abstract class PackedArrayUnitTest extends MultiDimensionalArrayAbstractUnitTest<String> {
 	
+	// how about that? almost anything should throw IllegalArgumentException or AIOOB
+	public static class ZeroDimension extends PackedArrayUnitTest {
+		PackedArray<String> array;
+		int[] sizes;
+		String[] model;
+
+		{
+			sizes = new int[] {};
+			array = new PackedArray<String>(sizes);
+			model = null;
+		}
+
+		@Override
+		protected PackedArray<String> createArray() {
+			return array;
+		}
+
+		@Override
+		protected int[] createLengths() {
+			return sizes;
+		}
+
+		@Override
+		protected String[] createModel() {
+			return model;
+		}
+	}
+
 	public static class OneDimension extends PackedArrayUnitTest {
 		PackedArray<String> array;
 		int[] sizes;

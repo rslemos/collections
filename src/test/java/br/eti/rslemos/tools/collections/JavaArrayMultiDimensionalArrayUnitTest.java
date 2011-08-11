@@ -156,4 +156,19 @@ public class JavaArrayMultiDimensionalArrayUnitTest {
 		setAndExpect(IllegalArgumentException.class, array, "");
 		setAndExpect(IllegalArgumentException.class, array, "", 0, 0, 0);
 	}
+	
+	@Test
+	public void testZeroDimensionArray() {
+		MultiDimensionalArray<String> array = new JavaArrayMultiDimensionalArray<String>(null);
+		
+		assertThat(array.dimensions(), is(equalTo(0)));
+		assertThat(array.length(), is(equalTo(new int[] {})));
+		
+		getAndExpect(ArrayIndexOutOfBoundsException.class, array);
+		setAndExpect(ArrayIndexOutOfBoundsException.class, array, "");
+
+		getAndExpect(IllegalArgumentException.class, array, 0);
+		setAndExpect(IllegalArgumentException.class, array, "", 0);
+	}
+	
 }

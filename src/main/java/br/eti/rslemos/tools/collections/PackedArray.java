@@ -63,11 +63,13 @@ public class PackedArray<T> implements MultiDimensionalArray<T> {
 	private static int[] computeStrides(int[] sizes) {
 		int[] strides = sizes.clone();
 		
-		System.arraycopy(sizes, 1, strides, 0, strides.length - 1);
-		strides[strides.length - 1] = 1;
-		
-		for (int i = strides.length - 1; i > 0; i--) {
-			strides[i-1] *= strides[i];
+		if (strides.length > 0) {
+			System.arraycopy(sizes, 1, strides, 0, strides.length - 1);
+			strides[strides.length - 1] = 1;
+			
+			for (int i = strides.length - 1; i > 0; i--) {
+				strides[i-1] *= strides[i];
+			}
 		}
 		
 		return strides;
@@ -92,13 +94,16 @@ public class PackedArray<T> implements MultiDimensionalArray<T> {
 	}
 	
 	private static int computeSize(int... sizes) {
-		int result = 1;
-		
-		for (int size : sizes) {
-			result *= size;
-		}
-		
-		return result;
+		if (sizes.length > 0) {
+			int result = 1;
+			
+			for (int size : sizes) {
+				result *= size;
+			}
+			
+			return result;
+		} else
+			return 0;
 	}
 	
 	int computeAddress(int... pos) {
@@ -116,10 +121,13 @@ public class PackedArray<T> implements MultiDimensionalArray<T> {
 		if (pos.length != sizes.length)
 			throw new IllegalArgumentException("Wrong number of dimensions: " + pos.length);
 		
-		for (int i = 0; i < pos.length; i++) {
-			if (pos[i] < 0 || pos[i] >= sizes[i])
-				throw new ArrayIndexOutOfBoundsException(pos[i]);
-		}
+		if (sizes.length > 0) {
+			for (int i = 0; i < pos.length; i++) {
+				if (pos[i] < 0 || pos[i] >= sizes[i])
+					throw new ArrayIndexOutOfBoundsException(pos[i]);
+			}
+		} else
+			throw new ArrayIndexOutOfBoundsException();
 	}
 
 	public T get(int... pos) {

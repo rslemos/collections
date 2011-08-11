@@ -25,6 +25,7 @@ import static br.eti.rslemos.tools.collections.MultiDimensionalArrays.elementWis
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertThat;
@@ -183,6 +184,7 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 	
 	@Test
 	public void testConstructorFromEmptyModel() {
+		assumeThat(rawModel, is(not(nullValue(Object.class))));
 		Object emptyModel = Array.newInstance(rawModel.getClass().getComponentType(), 0);
 		MultiDimensionalArray<V> array = newFromJavaArray(emptyModel, sizes);
 

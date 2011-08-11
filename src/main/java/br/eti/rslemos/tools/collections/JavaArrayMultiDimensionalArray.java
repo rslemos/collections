@@ -34,10 +34,13 @@ public class JavaArrayMultiDimensionalArray<T> implements MultiDimensionalArray<
 		if (pos.length != lengths.length)
 			throw new IllegalArgumentException("Wrong number of dimensions: " + pos.length);
 		
-		for (int i = 0; i < lengths.length; i++) {
-			if (pos[i] < 0 || pos[i] >= lengths[i])
-				throw new ArrayIndexOutOfBoundsException(pos[i]);
-		}
+		if (lengths.length > 0) {
+			for (int i = 0; i < lengths.length; i++) {
+				if (pos[i] < 0 || pos[i] >= lengths[i])
+					throw new ArrayIndexOutOfBoundsException(pos[i]);
+			}
+		} else
+			throw new ArrayIndexOutOfBoundsException();
 	}
 
 	@SuppressWarnings("unchecked")

@@ -57,8 +57,12 @@ public class MultiDimensionalArrays {
 	static Iterator<int[]> allAddresses(final int[] sizes) {
 		return new MultiDimensionalArrays.AddressIterator() {
 			{
-				next = sizes.clone();
-				Arrays.fill(next, 0);
+				if (sizes.length > 0) {
+					next = sizes.clone();
+					Arrays.fill(next, 0);
+				} else {
+					next = null;
+				}
 			}
 			
 			protected void computeNextAddress() {
