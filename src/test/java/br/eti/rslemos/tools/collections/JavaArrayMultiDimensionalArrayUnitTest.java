@@ -47,4 +47,30 @@ public class JavaArrayMultiDimensionalArrayUnitTest {
 		setAndExpect(IllegalArgumentException.class, array, "", 0, 0);
 	}
 	
+	@Test
+	public void testOneDimensionArray() {
+		String[] javaArray = new String[] { "old0", "old1" };
+		MultiDimensionalArray<String> array = new JavaArrayMultiDimensionalArray<String>(javaArray, new int[] {2});
+		
+		assertThat(array.dimensions(), is(equalTo(1)));
+		assertThat(array.length(), is(equalTo(new int[] {2})));
+		
+		assertThat(array.get(0), is(equalTo("old0")));
+		assertThat(array.set("data0", 0), is(equalTo("old0")));
+		assertThat(array.get(0), is(equalTo("data0")));
+		
+		assertThat(array.get(1), is(equalTo("old1")));
+		assertThat(array.set("data1", 1), is(equalTo("old1")));
+		assertThat(array.get(1), is(equalTo("data1")));
+		
+		getAndExpect(ArrayIndexOutOfBoundsException.class, array, -1);
+		getAndExpect(ArrayIndexOutOfBoundsException.class, array,  2);
+		setAndExpect(ArrayIndexOutOfBoundsException.class, array, "", -1);
+		setAndExpect(ArrayIndexOutOfBoundsException.class, array, "",  2);
+
+		getAndExpect(IllegalArgumentException.class, array);
+		getAndExpect(IllegalArgumentException.class, array,  0, 0);
+		setAndExpect(IllegalArgumentException.class, array, "");
+		setAndExpect(IllegalArgumentException.class, array, "", 0, 0);
+	}
 }
