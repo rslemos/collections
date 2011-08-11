@@ -26,41 +26,45 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeThat;
 
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.Before;
+import org.junit.Test;
 
-import org.junit.Ignore;
-
-@Ignore // mixing junit 3 and junit 4; cool
-public class MultiDimensionalArrayTester<V> extends TestCase {
+public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 	private MultiDimensionalArray<V> subject;
 	private int[] sizes;
-	private Object[] model;
-	
-	public MultiDimensionalArrayTester<V> init(MultiDimensionalArray<V> subject, int[] sizes, Object[] modelData) {
-		this.subject = subject;
-		this.sizes = sizes;
-		this.model = modelData;
-		
-		return this;
+	private Object model;
+
+	@Before
+	public void setUp() {
+		subject = createArray();
+		sizes = createLengths();
+		model = createModel();
 	}
 	
+	protected abstract MultiDimensionalArray<V> createArray();
+
+	protected abstract int[] createLengths();
+
+	protected abstract Object createModel();
+
+	@Test
 	public void testDimensions() {
 		assertThat(subject.dimensions(), is(equalTo(sizes.length)));
 	}
 	
+	@Test
 	public void testLength() {
 		assertThat(subject.length(), is(equalTo(sizes)));
 	}
 
+	@Test
 	public void testLengthsAreSecurelyIsolated() {
 		int[] lengths = subject.length();
 
@@ -71,6 +75,7 @@ public class MultiDimensionalArrayTester<V> extends TestCase {
 		assertThat(subject.length(), is(equalTo(sizes)));
 	}
 
+	@Test
 	public void testGetEachElementAtValidAddress() {
 		Iterator<int[]> addresses = allAddresses();
 		
@@ -80,6 +85,7 @@ public class MultiDimensionalArrayTester<V> extends TestCase {
 		}
 	}
 
+	@Test
 	public void testGetEachElementAlongBoundaryAddress() {
 		Iterator<int[]> addresses = allBoundaryAddresses();
 		
@@ -89,6 +95,7 @@ public class MultiDimensionalArrayTester<V> extends TestCase {
 		}
 	}
 
+	@Test
 	public void testSetEachElementAtValidAddress() {
 		Iterator<int[]> addresses = allAddresses();
 		
@@ -107,6 +114,7 @@ public class MultiDimensionalArrayTester<V> extends TestCase {
 		}
 	}
 	
+	@Test
 	public void testSetEachElementAlongBoundaryAddress() {
 		Iterator<int[]> addresses = allBoundaryAddresses();
 		
@@ -116,6 +124,7 @@ public class MultiDimensionalArrayTester<V> extends TestCase {
 		}
 	}
 
+	@Test
 	public void testCellIndependency() {
 		Iterator<int[]> targetAddresses = allAddresses();
 		
@@ -144,6 +153,7 @@ public class MultiDimensionalArrayTester<V> extends TestCase {
 		}
 	}
 	
+	@Test
 	public void testSimpleStorage() {
 		// try to store and get back <0, 0, ...>
 		int[] pos = sizes.clone();
@@ -156,8 +166,8 @@ public class MultiDimensionalArrayTester<V> extends TestCase {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private V getModelData(Object[] model, int... pos) {
-		Object[] last = model;
+	private V getModelData(Object model, int... pos) {
+		Object[] last = (Object[]) model;
 		int i;
 		for (i = 0; i < pos.length - 1; i++) {
 			last = (Object[]) last[pos[i]];
@@ -257,20 +267,6 @@ public class MultiDimensionalArrayTester<V> extends TestCase {
 		}
 	}
 
-	public static <V> TestSuite createTestSuite(MultiDimensionalArray<V> subject, int[] sizes, Object[] model) {
-		TestSuite suite = new TestSuite(MultiDimensionalArrayTester.class);
-		Enumeration<Test> tests = suite.tests();
-		while(tests.hasMoreElements()) {
-			Test test = tests.nextElement();
-			
-			@SuppressWarnings("unchecked")
-			MultiDimensionalArrayTester<V> specificTest = (MultiDimensionalArrayTester<V>) test;
-			specificTest.init(subject, sizes, model);
-		}
-		
-		return suite;
-	}
-	
 	private static abstract class AddressIterator implements Iterator<int[]> {
 		protected int[] next;
 

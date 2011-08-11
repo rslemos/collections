@@ -23,132 +23,215 @@ package br.eti.rslemos.tools.collections;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
-public class PackedArrayUnitTest extends TestCase {
+import org.junit.Test;
 
-	public static Test suite() {
-		TestSuite suite = new TestSuite(PackedArrayUnitTest.class);
-		
-		suite.addTest(forOneDimension());
-		suite.addTest(forTwoDimensions());
-		suite.addTest(forThreeDimensions());
-		suite.addTest(forFourDimensions());
-		suite.addTest(forFiveDimensions());
-		
-		return suite;
-	}
+public abstract class PackedArrayUnitTest extends MultiDimensionalArrayAbstractUnitTest<String> {
+	
+	public static class OneDimension extends PackedArrayUnitTest {
+		PackedArray<String> array;
+		int[] sizes;
+		String[] model;
 
-	private static TestSuite forOneDimension() {
-		int[] sizes = new int[] {6};
-		
-		PackedArray<String> array = new PackedArray<String>(sizes);
-		array.set("[0]", 0);
-		array.set("[1]", 1);
-		array.set("[2]", 2);
-		array.set("[3]", 3);
-		array.set("[4]", 4);
-		array.set("[5]", 5);
-		
-		String[] model = new String[] {"[0]", "[1]", "[2]", "[3]", "[4]", "[5]"};
-		
-		return MultiDimensionalArrayTester.createTestSuite(array, sizes, model);
+		{
+			sizes = new int[] {6};
+			
+			array = new PackedArray<String>(sizes);
+			array.set("[0]", 0);
+			array.set("[1]", 1);
+			array.set("[2]", 2);
+			array.set("[3]", 3);
+			array.set("[4]", 4);
+			array.set("[5]", 5);
+			
+			model = new String[] {"[0]", "[1]", "[2]", "[3]", "[4]", "[5]"};
+		}
+
+		@Override
+		protected PackedArray<String> createArray() {
+			return array;
+		}
+
+		@Override
+		protected int[] createLengths() {
+			return sizes;
+		}
+
+		@Override
+		protected String[] createModel() {
+			return model;
+		}
 	}
 	
-	private static TestSuite forTwoDimensions() {
-		int[] sizes = new int[] {3, 4};
-		
-		PackedArray<String> array = new PackedArray<String>(sizes);
-		array.set("[0, 0]", 0, 0);
-		array.set("[0, 1]", 0, 1);
-		array.set("[0, 2]", 0, 2);
-		array.set("[0, 3]", 0, 3);
-		array.set("[1, 0]", 1, 0);
-		array.set("[1, 1]", 1, 1);
-		array.set("[1, 2]", 1, 2);
-		array.set("[1, 3]", 1, 3);
-		array.set("[2, 0]", 2, 0);
-		array.set("[2, 1]", 2, 1);
-		array.set("[2, 2]", 2, 2);
-		array.set("[2, 3]", 2, 3);
-		
-		String[][] model = new String[][] {
-				{ "[0, 0]", "[0, 1]", "[0, 2]", "[0, 3]" },
-				{ "[1, 0]", "[1, 1]", "[1, 2]", "[1, 3]" },
-				{ "[2, 0]", "[2, 1]", "[2, 2]", "[2, 3]" },
-			};
-		
-		return MultiDimensionalArrayTester.createTestSuite(array, sizes, model);
-	}
+	public static class TwoDimensions extends PackedArrayUnitTest {
+		PackedArray<String> array;
+		int[] sizes;
+		String[][] model;
 
-	private static TestSuite forThreeDimensions() {
-		int[] sizes = new int[] {4, 2, 3};
-		
-		PackedArray<String> array = new PackedArray<String>(sizes);
-		String[][][] model = new String[4][2][3];
-		
-		for(int i = 0; i < sizes[0]; i++) {
-			for(int j = 0; j < sizes[1]; j++) {
-				for(int k = 0; k < sizes[2]; k++) {
-					String data = "[" + i + ", " + j + ", " + k + "]"; 
-					
-					model[i][j][k] = data;
-					array.set(data, i, j, k);
-				}
-			}
+		{
+			sizes = new int[] {3, 4};
+			
+			array = new PackedArray<String>(sizes);
+			array.set("[0, 0]", 0, 0);
+			array.set("[0, 1]", 0, 1);
+			array.set("[0, 2]", 0, 2);
+			array.set("[0, 3]", 0, 3);
+			array.set("[1, 0]", 1, 0);
+			array.set("[1, 1]", 1, 1);
+			array.set("[1, 2]", 1, 2);
+			array.set("[1, 3]", 1, 3);
+			array.set("[2, 0]", 2, 0);
+			array.set("[2, 1]", 2, 1);
+			array.set("[2, 2]", 2, 2);
+			array.set("[2, 3]", 2, 3);
+			
+			model = new String[][] {
+					{ "[0, 0]", "[0, 1]", "[0, 2]", "[0, 3]" },
+					{ "[1, 0]", "[1, 1]", "[1, 2]", "[1, 3]" },
+					{ "[2, 0]", "[2, 1]", "[2, 2]", "[2, 3]" },
+				};
 		}
-		
-		return MultiDimensionalArrayTester.createTestSuite(array, sizes, model);
+
+		@Override
+		protected PackedArray<String> createArray() {
+			return array;
+		}
+
+		@Override
+		protected int[] createLengths() {
+			return sizes;
+		}
+
+		@Override
+		protected String[][] createModel() {
+			return model;
+		}
+
 	}
 
-	private static TestSuite forFourDimensions() {
-		int[] sizes = new int[] {3, 5, 7, 9};
+	public static class ThreeDimensions extends PackedArrayUnitTest {
+		PackedArray<String> array;
+		int[] sizes;
+		String[][][] model;
 		
-		PackedArray<String> array = new PackedArray<String>(sizes);
-		String[][][][] model = new String[3][5][7][9];
-		
-		for(int i = 0; i < sizes[0]; i++) {
-			for(int j = 0; j < sizes[1]; j++) {
-				for(int k = 0; k < sizes[2]; k++) {
-					for(int l = 0; l < sizes[3]; l++) {
-						String data = "[" + i + ", " + j + ", " + k + ", " + l + "]"; 
+		{
+			sizes = new int[] {4, 2, 3};
+			
+			array = new PackedArray<String>(sizes);
+			model = new String[4][2][3];
+			
+			for(int i = 0; i < sizes[0]; i++) {
+				for(int j = 0; j < sizes[1]; j++) {
+					for(int k = 0; k < sizes[2]; k++) {
+						String data = "[" + i + ", " + j + ", " + k + "]"; 
 						
-						model[i][j][k][l] = data;
-						array.set(data, i, j, k, l);
+						model[i][j][k] = data;
+						array.set(data, i, j, k);
 					}
 				}
 			}
 		}
-		
-		return MultiDimensionalArrayTester.createTestSuite(array, sizes, model);
+
+		@Override
+		protected PackedArray<String> createArray() {
+			return array;
+		}
+
+		@Override
+		protected int[] createLengths() {
+			return sizes;
+		}
+
+		@Override
+		protected String[][][] createModel() {
+			return model;
+		}
 	}
 
-	private static TestSuite forFiveDimensions() {
-		int[] sizes = new int[] {1, 2, 3, 4, 5};
+	public static class FourDimensions extends PackedArrayUnitTest {
+		PackedArray<String> array;
+		int[] sizes;
+		String[][][][] model;
 		
-		PackedArray<String> array = new PackedArray<String>(sizes);
-		String[][][][][] model = new String[1][2][3][4][5];
-		
-		for(int i = 0; i < sizes[0]; i++) {
-			for(int j = 0; j < sizes[1]; j++) {
-				for(int k = 0; k < sizes[2]; k++) {
-					for(int l = 0; l < sizes[3]; l++) {
-						for(int m = 0; m < sizes[4]; m++) {
-							String data = "[" + i + ", " + j + ", " + k + ", " + l + ", " + m + "]"; 
+		{
+			sizes = new int[] {3, 5, 7, 9};
+			
+			array = new PackedArray<String>(sizes);
+			model = new String[3][5][7][9];
+			
+			for(int i = 0; i < sizes[0]; i++) {
+				for(int j = 0; j < sizes[1]; j++) {
+					for(int k = 0; k < sizes[2]; k++) {
+						for(int l = 0; l < sizes[3]; l++) {
+							String data = "[" + i + ", " + j + ", " + k + ", " + l + "]"; 
 							
-							model[i][j][k][l][m] = data;
-							array.set(data, i, j, k, l, m);
+							model[i][j][k][l] = data;
+							array.set(data, i, j, k, l);
 						}
 					}
 				}
 			}
 		}
-		
-		return MultiDimensionalArrayTester.createTestSuite(array, sizes, model);
+
+		@Override
+		protected PackedArray<String> createArray() {
+			return array;
+		}
+
+		@Override
+		protected int[] createLengths() {
+			return sizes;
+		}
+
+		@Override
+		protected String[][][][] createModel() {
+			return model;
+		}
 	}
 
+	public static class FiveDimensions extends PackedArrayUnitTest {
+		PackedArray<String> array;
+		int[] sizes;
+		String[][][][][] model;
+		
+		{
+			sizes = new int[] {1, 2, 3, 4, 5};
+			array = new PackedArray<String>(sizes);
+			model = new String[1][2][3][4][5];
+			
+			for(int i = 0; i < sizes[0]; i++) {
+				for(int j = 0; j < sizes[1]; j++) {
+					for(int k = 0; k < sizes[2]; k++) {
+						for(int l = 0; l < sizes[3]; l++) {
+							for(int m = 0; m < sizes[4]; m++) {
+								String data = "[" + i + ", " + j + ", " + k + ", " + l + ", " + m + "]"; 
+								
+								model[i][j][k][l][m] = data;
+								array.set(data, i, j, k, l, m);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		@Override
+		protected PackedArray<String> createArray() {
+			return array;
+		}
+
+		@Override
+		protected int[] createLengths() {
+			return sizes;
+		}
+
+		@Override
+		protected String[][][][][] createModel() {
+			return model;
+		}
+	}
+
+	@Test
 	public void testElementLayout() {
 		PackedArray<Object> oneDimArray = new PackedArray<Object>(5);
 		assertThat(oneDimArray.computeAddress(0), is(equalTo(0)));
@@ -191,6 +274,7 @@ public class PackedArrayUnitTest extends TestCase {
 		assertThat(threeDimArray.computeAddress(1, 1, 1), is(equalTo(7)));
 	}
 
+	@Test
 	public void testOneDimensionalArray() {
 		int[] sizes = { 6 };
 		MultiDimensionalArray<String> array = new PackedArray<String>(sizes);
@@ -210,6 +294,7 @@ public class PackedArrayUnitTest extends TestCase {
 		assertThat(slice.get(2), is(equalTo("[4]")));
 	}
 	
+	@Test
 	public void testTwoDimensionalArray() {
 		int[] sizes = { 3, 3 };
 		MultiDimensionalArray<String> array = new PackedArray<String>(sizes);
@@ -266,6 +351,7 @@ public class PackedArrayUnitTest extends TestCase {
 		assertThat(swap01.get(2, 2), is(equalTo("[2, 2]")));
 	}
 
+	@Test
 	public void testThreeDimensionalArray() {
 		int[] sizes = { 2, 2, 2 };
 		MultiDimensionalArray<String> array = new PackedArray<String>(sizes);
