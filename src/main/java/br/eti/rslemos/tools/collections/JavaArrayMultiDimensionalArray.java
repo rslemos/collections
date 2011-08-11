@@ -33,34 +33,47 @@ public class JavaArrayMultiDimensionalArray<T> implements MultiDimensionalArray<
 	private void checkBoundaries(int... pos) {
 		if (pos.length != lengths.length)
 			throw new IllegalArgumentException("Wrong number of dimensions: " + pos.length);
+		
+		for (int i = 0; i < lengths.length; i++) {
+			if (pos[i] < 0 || pos[i] >= lengths[i])
+				throw new ArrayIndexOutOfBoundsException(pos[i]);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
 	public T get(int... pos) {
 		checkBoundaries(pos);
 		
-		Object[] last = (Object[]) javaArray;
-		int i;
-		for (i = 0; i < pos.length - 1; i++) {
-			last = (Object[]) last[pos[i]];
+		try {
+			Object[] last = (Object[]) javaArray;
+			int i;
+			for (i = 0; i < pos.length - 1; i++) {
+				last = (Object[]) last[pos[i]];
+			}
+			
+			return (T) last[pos[i]];
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return null;
 		}
-		
-		return (T) last[pos[i]];
 	}
 
 	@SuppressWarnings("unchecked")
 	public T set(T element, int... pos) {
 		checkBoundaries(pos);
 		
-		Object[] last = (Object[]) javaArray;
-		int i;
-		for (i = 0; i < pos.length - 1; i++) {
-			last = (Object[]) last[pos[i]];
+		try {
+			Object[] last = (Object[]) javaArray;
+			int i;
+			for (i = 0; i < pos.length - 1; i++) {
+				last = (Object[]) last[pos[i]];
+			}
+			
+			T old = (T) last[pos[i]];
+			last[pos[i]] = element;
+			return old;
+		} catch (ArrayIndexOutOfBoundsException e) {
+			throw new ArrayStoreException();
 		}
-		
-		T old = (T) last[pos[i]];
-		last[pos[i]] = element;
-		return old;
 	}
 
 	public int[] length() {
