@@ -54,6 +54,8 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 
 	protected abstract Object createModel();
 
+	protected abstract V createSample();
+	
 	@Test
 	public void testDimensions() {
 		assertThat(subject.dimensions(), is(equalTo(sizes.length)));
@@ -103,7 +105,7 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 			int[] address = addresses.next();
 			V modelData = model.get(address);
 			
-			V newData = model.get(invert(address));
+			V newData = createSample();
 			V oldData = subject.get(address);
 			
 			assertThat(newData, is(not(equalTo(modelData))));
@@ -131,10 +133,8 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 		while(targetAddresses.hasNext()) {
 			int[] targetAddress = targetAddresses.next();
 			
-			// swap targetAddress and invert(targetAddress);
-			V data0 = subject.get(invert(targetAddress));
-			V data1 = subject.set(data0, targetAddress);
-			subject.set(data1, invert(targetAddress));
+			V sample = createSample();
+			V old = subject.set(sample, targetAddress);
 			
 			try {
 				Iterator<int[]> addresses = allAddresses();
@@ -142,17 +142,16 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 					int[] address = addresses.next();
 					
 					// skip targetAddress
-					if (!Arrays.equals(address, targetAddress) && !Arrays.equals(invert(address), targetAddress)) {
-						assertThat(subject.get(address), is(not(sameInstance(data0))));
+					if (!Arrays.equals(address, targetAddress)) {
+						assertThat(subject.get(address), is(not(sameInstance(sample))));
 					}
 				}
 			} finally {
-				subject.set(data1, targetAddress);
-				subject.set(data0, invert(targetAddress));
+				subject.set(old, targetAddress);
 			}
 		}
 	}
-	
+
 	@Test
 	public void testSimpleStorage() {
 		// try to store and get back <0, 0, ...>
@@ -165,24 +164,6 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 		assertThat(subject.get(pos), is(sameInstance(data)));
 	}
 	
-	private int[] invert(int[] address0) {
-		int[] address = address0.clone();
-		
-		for (int i = 0; i < address.length; i++) {
-			address[i] = sizes[i] - address[i] - 1;
-		}
-		
-		if (Arrays.equals(address, address0)) {
-			// If the dimensions are all odd, then there will exist
-			// a central cell whose address and inverted address will
-			// be the same. Since we must test *ALL* cells, let's
-			// change it for the zero address. Of course, this will
-			// still fail if all dimensions are of length 1.
-			Arrays.fill(address, 0);
-		}
-		return address;
-	}
-
 	private Iterator<int[]> allAddresses() {
 		return new AddressIterator() {
 			{

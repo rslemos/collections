@@ -231,6 +231,11 @@ public abstract class PackedArrayUnitTest extends MultiDimensionalArrayAbstractU
 		}
 	}
 
+	protected String createSample() {
+		return "sam" + "ple";
+	}
+	
+
 	@Test
 	public void testElementLayout() {
 		PackedArray<Object> oneDimArray = new PackedArray<Object>(5);
