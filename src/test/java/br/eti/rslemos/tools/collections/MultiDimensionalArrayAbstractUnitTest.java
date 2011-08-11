@@ -247,7 +247,7 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 		};
 	}
 
-	private static <V, E extends RuntimeException> void getAndExpect(Class<E> clazz, MultiDimensionalArray<V> array, int... pos) {
+	public static <V, E extends RuntimeException> void getAndExpect(Class<E> clazz, MultiDimensionalArray<V> array, int... pos) {
 		try {
 			array.get(pos);
 			fail("Should have thrown " + clazz);
@@ -257,7 +257,7 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 		}
 	}
 
-	private static <V, E extends RuntimeException> void setAndExpect(Class<E> clazz, MultiDimensionalArray<V> array, V v, int... pos) {
+	public static <V, E extends RuntimeException> void setAndExpect(Class<E> clazz, MultiDimensionalArray<V> array, V v, int... pos) {
 		try {
 			array.set(v, pos);
 			fail("Should have thrown " + clazz);
