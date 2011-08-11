@@ -155,8 +155,35 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void testConstructorFromItself() {
+		MultiDimensionalArray<V> array = newFromMultiDimensionalArray(subject);
+		
+		assertThat(elementWiseEquals(subject, array), is(equalTo(true)));
+		runAllTests(array);
+	}
+
+	@Test
+	public void testConstructorFromKnownGoodImplementation() {
+		MultiDimensionalArray<V> array = newFromMultiDimensionalArray(model);
+		
+		assertThat(elementWiseEquals(subject, array), is(equalTo(true)));
+		runAllTests(array);
+	}
+	
+	private void runAllTests(MultiDimensionalArray<V> array) {
+		subject = array;
+		testDimensions();
+		testLength();
+		testLengthsAreSecurelyIsolated();
+		testCellIndependency(); // should be the first to change data, since it is very picky about contents
+		testGetEachElementAtValidAddress();
+		testGetEachElementAlongBoundaryAddress();
+		testSetEachElementAtValidAddress();
+		testSetEachElementAlongBoundaryAddress();
+	}
+
+	@SuppressWarnings("unchecked")
+	private MultiDimensionalArray<V> newFromMultiDimensionalArray(MultiDimensionalArray<V> source) {
 		@SuppressWarnings("rawtypes")
 		Class<? extends MultiDimensionalArray> clazz = subject.getClass();
 		
@@ -172,22 +199,11 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 		
 		MultiDimensionalArray<V> array;
 		try {
-			array = ctor.newInstance(subject);
+			array = ctor.newInstance(source);
 		} catch (Exception e) {
 			throw (AssertionError)(new AssertionError("Constructor(MultiDimensionalArray) failed").initCause(e));
 		}
-		
-		assertThat(elementWiseEquals(subject, array), is(equalTo(true)));
-		subject = array;
-		
-		testDimensions();
-		testLength();
-		testLengthsAreSecurelyIsolated();
-		testCellIndependency(); // should be the first to change data, since it is very picky about contents
-		testGetEachElementAtValidAddress();
-		testGetEachElementAlongBoundaryAddress();
-		testSetEachElementAtValidAddress();
-		testSetEachElementAlongBoundaryAddress();
+		return array;
 	}
 	
 	private Iterator<int[]> allBoundaryAddresses() {

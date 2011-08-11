@@ -21,6 +21,7 @@
 package br.eti.rslemos.tools.collections;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
 public class PackedArray<T> implements MultiDimensionalArray<T> {
 	protected final int[] sizes;
@@ -33,6 +34,7 @@ public class PackedArray<T> implements MultiDimensionalArray<T> {
 		this(sizes, computeStrides(sizes), computeOffsets(sizes));
 	}
 
+	@SuppressWarnings("unchecked")
 	public PackedArray(MultiDimensionalArray<T> init) {
 		if (init instanceof PackedArray) {
 			PackedArray<T> packed = (PackedArray<T>) init;
@@ -40,8 +42,18 @@ public class PackedArray<T> implements MultiDimensionalArray<T> {
 			this.sizes = packed.sizes;
 			this.strides = packed.strides;
 			this.offsets = packed.offsets;
-		} else
-			throw new UnsupportedOperationException();
+		} else {
+			this.sizes = init.length();
+			this.data = (T[]) new Object[computeSize(sizes)];
+			this.strides = computeStrides(sizes);
+			this.offsets = computeOffsets(sizes);
+			
+			Iterator<int[]> addresses = MultiDimensionalArrays.allAddresses(sizes);
+			while(addresses.hasNext()) {
+				int[] address = addresses.next();
+				data[computeAddress(address)] = init.get(address);
+			}
+		}
 	}
 	
 	private static int[] computeStrides(int[] sizes) {
