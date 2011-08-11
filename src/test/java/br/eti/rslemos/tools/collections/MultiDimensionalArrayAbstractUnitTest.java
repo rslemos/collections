@@ -39,13 +39,13 @@ import org.junit.Test;
 public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 	private MultiDimensionalArray<V> subject;
 	private int[] sizes;
-	private Object model;
+	private JavaArrayMultiDimensionalArray<V> model;
 
 	@Before
 	public void setUp() {
 		subject = createArray();
 		sizes = createLengths();
-		model = createModel();
+		model = new JavaArrayMultiDimensionalArray<V>(createModel(), sizes);
 	}
 	
 	protected abstract MultiDimensionalArray<V> createArray();
@@ -81,7 +81,7 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 		
 		while(addresses.hasNext()) {
 			int[] address = addresses.next();
-			assertThat(subject.get(address), is(equalTo(getModelData(model, address))));
+			assertThat(subject.get(address), is(equalTo(model.get(address))));
 		}
 	}
 
@@ -101,9 +101,9 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 		
 		while(addresses.hasNext()) {
 			int[] address = addresses.next();
-			V modelData = getModelData(model, address);
+			V modelData = model.get(address);
 			
-			V newData = getModelData(model, invert(address));
+			V newData = model.get(invert(address));
 			V oldData = subject.get(address);
 			
 			assertThat(newData, is(not(equalTo(modelData))));
@@ -159,23 +159,12 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 		int[] pos = sizes.clone();
 		Arrays.fill(pos, 0);
 		
-		V data = getModelData(model, pos);
+		V data = model.get(pos);
 		
 		subject.set(data, pos);
 		assertThat(subject.get(pos), is(sameInstance(data)));
 	}
 	
-	@SuppressWarnings("unchecked")
-	private V getModelData(Object model, int... pos) {
-		Object[] last = (Object[]) model;
-		int i;
-		for (i = 0; i < pos.length - 1; i++) {
-			last = (Object[]) last[pos[i]];
-		}
-		
-		return (V) last[pos[i]];
-	}
-
 	private int[] invert(int[] address0) {
 		int[] address = address0.clone();
 		
