@@ -208,4 +208,65 @@ public class PackedArray<T> implements MultiDimensionalArray<T> {
 		
 		return is;
 	}
+
+	@Override
+	public int hashCode() {
+		// code adapted from java.lang.Arrays.deepHashCode()
+		
+		if (sizes.length == 0)
+			return 0;
+		
+        // will not iterate through bare data since
+        // offsets and ordering imposed by strides may still apply
+		// besides, hashCode() is reset for each component
+
+        return hashCode0();
+	}
+
+	private int hashCode0(int... pos) {
+		// code adapted from java.lang.Arrays.deepHashCode()
+		
+		if (pos.length == sizes.length) {
+			// leaf case
+        	T element = get(pos);
+        	
+        	int elementHash = 0;
+            if (element instanceof Object[])
+                elementHash = Arrays.deepHashCode((Object[]) element);
+            else if (element instanceof byte[])
+                elementHash = Arrays.hashCode((byte[]) element);
+            else if (element instanceof short[])
+                elementHash = Arrays.hashCode((short[]) element);
+            else if (element instanceof int[])
+                elementHash = Arrays.hashCode((int[]) element);
+            else if (element instanceof long[])
+                elementHash = Arrays.hashCode((long[]) element);
+            else if (element instanceof char[])
+                elementHash = Arrays.hashCode((char[]) element);
+            else if (element instanceof float[])
+                elementHash = Arrays.hashCode((float[]) element);
+            else if (element instanceof double[])
+                elementHash = Arrays.hashCode((double[]) element);
+            else if (element instanceof boolean[])
+                elementHash = Arrays.hashCode((boolean[]) element);
+            else if (element != null)
+                elementHash = element.hashCode();
+            
+            return elementHash;
+		} else {
+			// inner branch case
+			
+			int result = 1;
+	
+			int newPos[] = new int[pos.length + 1];
+			System.arraycopy(pos, 0, newPos, 0, pos.length);
+			
+			for (int i = 0; i < sizes[pos.length]; i++) {
+				newPos[pos.length] = i;
+	            result = 31 * result + hashCode0(newPos);
+			}
+	
+	        return result;
+		}
+	}
 }

@@ -199,6 +199,11 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 		testSetEachElementAtValidAddress();
 		testSetEachElementAlongBoundaryAddress();
 	}
+
+	@Test
+	public void testHashCode() {
+		assertThat(subject.hashCode(), is(equalTo(Arrays.deepHashCode((Object[]) rawModel))));
+	}
 	
 	private void runAllTests(MultiDimensionalArray<V> array) {
 		subject = array;
