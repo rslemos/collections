@@ -31,6 +31,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeThat;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -41,13 +42,15 @@ import org.junit.Test;
 public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 	private MultiDimensionalArray<V> subject;
 	private int[] sizes;
+	private Object rawModel;
 	private JavaArrayMultiDimensionalArray<V> model;
 
 	@Before
 	public void setUp() {
 		subject = createArray();
 		sizes = createLengths();
-		model = new JavaArrayMultiDimensionalArray<V>(createModel(), sizes);
+		rawModel = createModel();
+		model = new JavaArrayMultiDimensionalArray<V>(rawModel, sizes);
 	}
 	
 	protected abstract MultiDimensionalArray<V> createArray();
@@ -170,6 +173,31 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 		runAllTests(array);
 	}
 	
+	@Test
+	public void testConstructorFromRawModel() {
+		MultiDimensionalArray<V> array = newFromJavaArray(rawModel, sizes);
+		
+		assertThat(elementWiseEquals(subject, array), is(equalTo(true)));
+		runAllTests(array);
+	}
+	
+	@Test
+	public void testConstructorFromEmptyModel() {
+		Object emptyModel = Array.newInstance(rawModel.getClass().getComponentType(), 0);
+		MultiDimensionalArray<V> array = newFromJavaArray(emptyModel, sizes);
+
+		model = new JavaArrayMultiDimensionalArray<V>(emptyModel, sizes);
+		subject = array;
+		
+		testDimensions();
+		testLength();
+		testLengthsAreSecurelyIsolated();
+		testGetEachElementAtValidAddress();
+		testGetEachElementAlongBoundaryAddress();
+		testSetEachElementAtValidAddress();
+		testSetEachElementAlongBoundaryAddress();
+	}
+	
 	private void runAllTests(MultiDimensionalArray<V> array) {
 		subject = array;
 		testDimensions();
@@ -202,6 +230,30 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 			array = ctor.newInstance(source);
 		} catch (Exception e) {
 			throw (AssertionError)(new AssertionError("Constructor(MultiDimensionalArray) failed").initCause(e));
+		}
+		return array;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private MultiDimensionalArray<V> newFromJavaArray(Object source, int... sizes) {
+		@SuppressWarnings("rawtypes")
+		Class<? extends MultiDimensionalArray> clazz = subject.getClass();
+		
+		@SuppressWarnings("rawtypes")
+		Constructor<? extends MultiDimensionalArray> ctor = null;
+		try {
+			ctor = clazz.getConstructor(Object.class, int[].class);
+		} catch (SecurityException e) {
+			fail("Constructor(Object, int...) must be accessible");
+		} catch (NoSuchMethodException e) {
+			fail("Constructor(Object, int...) must exist");
+		}
+		
+		MultiDimensionalArray<V> array;
+		try {
+			array = ctor.newInstance(source, sizes);
+		} catch (Exception e) {
+			throw (AssertionError)(new AssertionError("Constructor(Object, int...) failed").initCause(e));
 		}
 		return array;
 	}

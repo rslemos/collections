@@ -55,6 +55,10 @@ public class PackedArray<T> implements MultiDimensionalArray<T> {
 			}
 		}
 	}
+
+	public PackedArray(Object init, int... sizes) {
+		this(new JavaArrayMultiDimensionalArray<T>(init, sizes));
+	}
 	
 	private static int[] computeStrides(int[] sizes) {
 		int[] strides = sizes.clone();
