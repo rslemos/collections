@@ -152,18 +152,6 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 		}
 	}
 
-	@Test
-	public void testSimpleStorage() {
-		// try to store and get back <0, 0, ...>
-		int[] pos = sizes.clone();
-		Arrays.fill(pos, 0);
-		
-		V data = model.get(pos);
-		
-		subject.set(data, pos);
-		assertThat(subject.get(pos), is(sameInstance(data)));
-	}
-	
 	private Iterator<int[]> allAddresses() {
 		return new AddressIterator() {
 			{
