@@ -36,11 +36,11 @@
 	</properties>
 
 	<url>https://github.com/rslemos/collections</url>
-	
+
 	<issueManagement>
 		<url>https://github.com/rslemos/collections/issues</url>
 	</issueManagement>
-	
+
 	<developers>
 		<developer>
 			<id>rslemos</id>
@@ -49,18 +49,18 @@
 			<timezone>UTC-3</timezone>
 		</developer>
 	</developers>
-	
+
 	<licenses>
 		<license>
 			<name>Apache License, Version 2.0</name>
 			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
 		</license>
 	</licenses>
-	
+
 	<scm>
 		<url>git@github.com:rslemos/collections.git</url>
 	</scm>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -73,6 +73,14 @@
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-all</artifactId>
 			<version>1.1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.6</version>
+			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
