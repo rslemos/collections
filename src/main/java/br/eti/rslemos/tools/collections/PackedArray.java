@@ -23,10 +23,7 @@ package br.eti.rslemos.tools.collections;
 import java.util.Arrays;
 import java.util.Iterator;
 
-public class PackedArray<T> implements MultiDimensionalArray<T> {
-	protected final int[] sizes;
-	private final T[] data;
-	
+public class PackedArray<T> extends SimplePackedArray<T> {
 	private final int[] strides;
 	private final int[] offsets;
 
@@ -34,17 +31,14 @@ public class PackedArray<T> implements MultiDimensionalArray<T> {
 		this(sizes, computeStrides(sizes), computeOffsets(sizes));
 	}
 
-	@SuppressWarnings("unchecked")
 	public PackedArray(MultiDimensionalArray<T> init) {
+		super(init, false);
+		
 		if (init instanceof PackedArray) {
 			PackedArray<T> packed = (PackedArray<T>) init;
-			this.data = packed.data.clone();
-			this.sizes = packed.sizes;
 			this.strides = packed.strides;
 			this.offsets = packed.offsets;
 		} else {
-			this.sizes = init.length();
-			this.data = (T[]) new Object[computeSize(sizes)];
 			this.strides = computeStrides(sizes);
 			this.offsets = computeOffsets(sizes);
 			
@@ -81,34 +75,20 @@ public class PackedArray<T> implements MultiDimensionalArray<T> {
 		return offsets;
 	}
 
-	@SuppressWarnings("unchecked")
 	protected PackedArray(int[] sizes, int[] strides, int[] offsets) {
-		this((T[]) new Object[computeSize(sizes)], sizes, strides, offsets);
-	}
-	
-	private PackedArray(T[] data, int[] sizes, int[] strides, int[] offsets) {
-		this.data = data;
-		this.sizes = sizes;
+		super(sizes);
 		this.strides = strides;
 		this.offsets = offsets;
 	}
 	
-	private static int computeSize(int... sizes) {
-		if (sizes.length > 0) {
-			int result = 1;
-			
-			for (int size : sizes) {
-				result *= size;
-			}
-			
-			return result;
-		} else
-			return 0;
+	private PackedArray(T[] data, int[] sizes, int[] strides, int[] offsets) {
+		super(data, sizes);
+		this.strides = strides;
+		this.offsets = offsets;
 	}
-	
-	int computeAddress(int... pos) {
-		checkBoundaries(pos);
-		
+
+	@Override
+	protected int computeAddress(int... pos) {
 		int address = 0;
 		for (int i = 0; i < pos.length; i++) {
 			address += (pos[i] + offsets[i]) * strides[i];
@@ -117,29 +97,7 @@ public class PackedArray<T> implements MultiDimensionalArray<T> {
 		return address;
 	}
 
-	private void checkBoundaries(int[] pos) {
-		if (pos.length != sizes.length)
-			throw new IllegalArgumentException("Wrong number of dimensions: " + pos.length);
-		
-		if (sizes.length > 0) {
-			for (int i = 0; i < pos.length; i++) {
-				if (pos[i] < 0 || pos[i] >= sizes[i])
-					throw new ArrayIndexOutOfBoundsException(pos[i]);
-			}
-		} else
-			throw new ArrayIndexOutOfBoundsException();
-	}
-
-	public T get(int... pos) {
-		return data[computeAddress(pos)];
-	}
-
-	public T set(T element, int... pos) {
-		T old = data[computeAddress(pos)];
-		data[computeAddress(pos)] = element;
-		return old;
-	}
-	
+	@Override
 	public PackedArray<T> slice(int dimension, int from, int to) {
 		if (dimension < 0 || dimension >= sizes.length)
 			throw new IllegalArgumentException("Illegal dimension: " + dimension);
@@ -162,6 +120,7 @@ public class PackedArray<T> implements MultiDimensionalArray<T> {
 		return new PackedArray<T>(this.data, newSizes, strides, newOffsets);
 	}
 
+	@Override
 	public PackedArray<T> swap(int dimensionA, int dimensionB) {
 		if (dimensionA < 0 || dimensionA >= sizes.length)
 			throw new IllegalArgumentException("Illegal dimension: " + dimensionB);
@@ -191,14 +150,6 @@ public class PackedArray<T> implements MultiDimensionalArray<T> {
 				reverse(offsets.clone()));
 	}
 
-	public int[] length() {
-		return sizes.clone();
-	}
-
-	public int dimensions() {
-		return sizes.length;
-	}
-	
 	private static int[] reverse(int[] is) {
 		for (int i = 0; i < is.length/2; i++) {
 			is[i] ^= is[is.length - i - 1];
@@ -207,140 +158,5 @@ public class PackedArray<T> implements MultiDimensionalArray<T> {
 		}
 		
 		return is;
-	}
-
-	@Override
-	public int hashCode() {
-		// code adapted from java.lang.Arrays.deepHashCode()
-		
-		if (sizes.length == 0)
-			return 0;
-		
-        // will not iterate through bare data since
-        // offsets and ordering imposed by strides may still apply
-		// besides, hashCode() is reset for each component
-
-        return hashCode0();
-	}
-
-	private int hashCode0(int... pos) {
-		// code adapted from java.lang.Arrays.deepHashCode()
-		
-		if (pos.length == sizes.length) {
-			// leaf case
-        	T element = get(pos);
-        	
-        	int elementHash = 0;
-            if (element instanceof Object[])
-                elementHash = Arrays.deepHashCode((Object[]) element);
-            else if (element instanceof byte[])
-                elementHash = Arrays.hashCode((byte[]) element);
-            else if (element instanceof short[])
-                elementHash = Arrays.hashCode((short[]) element);
-            else if (element instanceof int[])
-                elementHash = Arrays.hashCode((int[]) element);
-            else if (element instanceof long[])
-                elementHash = Arrays.hashCode((long[]) element);
-            else if (element instanceof char[])
-                elementHash = Arrays.hashCode((char[]) element);
-            else if (element instanceof float[])
-                elementHash = Arrays.hashCode((float[]) element);
-            else if (element instanceof double[])
-                elementHash = Arrays.hashCode((double[]) element);
-            else if (element instanceof boolean[])
-                elementHash = Arrays.hashCode((boolean[]) element);
-            else if (element != null)
-                elementHash = element.hashCode();
-            
-            return elementHash;
-		} else {
-			// inner branch case
-			
-			int result = 1;
-	
-			pos = appendDimension(pos);
-			
-			for (int i = 0; i < sizes[pos.length - 1]; i++) {
-				pos[pos.length - 1] = i;
-	            result = 31 * result + hashCode0(pos);
-			}
-	
-	        return result;
-		}
-	}
-
-	@Override
-	public String toString() {
-		if (sizes.length == 0)
-			return "null"; // for consistency with java.util.Arrays.deepToString()
-		
-		StringBuilder buf = new StringBuilder();
-		toString0(buf);
-		return buf.toString();
-	}
-
-	private void toString0(StringBuilder buf, int... pos) {
-		if (pos.length == sizes.length) {
-			// leaf case
-        	T element = get(pos);
-        	
-            if (element instanceof Object[])
-            	buf.append(Arrays.deepToString((Object[]) element));
-            else if (element instanceof byte[])
-            	buf.append(Arrays.toString((byte[]) element));
-            else if (element instanceof short[])
-                buf.append(Arrays.toString((short[]) element));
-            else if (element instanceof int[])
-                buf.append(Arrays.toString((int[]) element));
-            else if (element instanceof long[])
-                buf.append(Arrays.toString((long[]) element));
-            else if (element instanceof char[])
-                buf.append(Arrays.toString((char[]) element));
-            else if (element instanceof float[])
-                buf.append(Arrays.toString((float[]) element));
-            else if (element instanceof double[])
-                buf.append(Arrays.toString((double[]) element));
-            else if (element instanceof boolean[])
-                buf.append(Arrays.toString((boolean[]) element));
-            else 
-            	buf.append(String.valueOf(element));
-		} else {
-			// inner branch case
-			buf.append("[");
-			pos = appendDimension(pos);
-			
-			for (int i = 0; i < sizes[pos.length - 1]; i++) {
-				pos[pos.length - 1] = i;
-				toString0(buf, pos);
-				
-				if (i == sizes[pos.length - 1] - 1)
-					break;
-				
-				buf.append(", ");
-			}
-			buf.append("]");
-		}
-	}
-	
-	private static int[] appendDimension(int... pos) {
-		int newPos[] = new int[pos.length + 1];
-		System.arraycopy(pos, 0, newPos, 0, pos.length);
-		return newPos;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null)
-			return false;
-		
-		if (obj == this)
-			return true;
-
-		if (!(obj instanceof MultiDimensionalArray))
-			return false;
-		
-		MultiDimensionalArray<?> other = (MultiDimensionalArray<?>) obj;
-		
-		return MultiDimensionalArrays.elementWiseEquals(this, other);
 	}
 }
