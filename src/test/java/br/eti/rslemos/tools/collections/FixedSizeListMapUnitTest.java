@@ -30,7 +30,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-public class FixedListMapUnitTest {
+public class FixedSizeListMapUnitTest {
 	@Test
 	public void test() {
 //		SimplePackedArray<String> array = new SimplePackedArray<String>(
@@ -45,7 +45,7 @@ public class FixedListMapUnitTest {
 
 		
 		SimplePackedArray<String> array = new SimplePackedArray<String>(4, 3);
-		FixedListMap<String,String> listMap = new FixedListMap<String, String>(array, "featureA", "featureB", "featureC");
+		FixedSizeListMap<String,String> listMap = new FixedSizeListMap<String, String>(array, "featureA", "featureB", "featureC");
 		
 		assertThat(listMap.size(), is(equalTo(4)));
 		

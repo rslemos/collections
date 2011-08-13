@@ -31,12 +31,12 @@ import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-public class FixedListMap<K, V> extends AbstractList<Map<K, V>> implements List<Map<K, V>> {
+public class FixedSizeListMap<K, V> extends AbstractList<Map<K, V>> implements List<Map<K, V>> {
 
 	private final MultiDimensionalArray<V> array;
 	private final K[] keys;
 
-	public FixedListMap(MultiDimensionalArray<V> array, K... keys) {
+	public FixedSizeListMap(MultiDimensionalArray<V> array, K... keys) {
 		if (array.length()[1] != keys.length)
 			throw new IllegalArgumentException("Second dimension must have exact number of keys");
 		
@@ -110,22 +110,22 @@ public class FixedListMap<K, V> extends AbstractList<Map<K, V>> implements List<
 
 		@Override
 		public V get(Object key) {
-			return FixedListMap.this.get(i, key);
+			return FixedSizeListMap.this.get(i, key);
 		}
 
 		@Override
 		public V put(K key, V value) {
-			return FixedListMap.this.put(i, key, value);
+			return FixedSizeListMap.this.put(i, key, value);
 		}
 		
 		@Override
 		public V remove(Object key) {
-			return FixedListMap.this.remove(i, key);
+			return FixedSizeListMap.this.remove(i, key);
 		}
 
 		@Override
 		public boolean containsKey(Object key) {
-			return FixedListMap.this.containsKey(i, key);
+			return FixedSizeListMap.this.containsKey(i, key);
 		}
 	}
 
@@ -144,7 +144,7 @@ public class FixedListMap<K, V> extends AbstractList<Map<K, V>> implements List<
 
 		@Override
 		public int size() {
-			return FixedListMap.this.size(i);
+			return FixedSizeListMap.this.size(i);
 		}
 	}
 	
@@ -189,15 +189,15 @@ public class FixedListMap<K, V> extends AbstractList<Map<K, V>> implements List<
 		}
 
 		public K getKey() {
-			return FixedListMap.this.getKey(i, j);
+			return FixedSizeListMap.this.getKey(i, j);
 		}
 
 		public V getValue() {
-			return FixedListMap.this.get(i, j);
+			return FixedSizeListMap.this.get(i, j);
 		}
 
 		public V setValue(V value) {
-			return FixedListMap.this.set(value, i, j);
+			return FixedSizeListMap.this.set(value, i, j);
 		}
 
 	}
