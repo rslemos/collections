@@ -44,9 +44,50 @@ public class FixedListMap<K, V> extends AbstractList<Map<K, V>> implements ListM
 		Arrays.sort(this.keys);
 	}
 
+	protected V get(int i, int j) {
+		return array.get(i, j);
+	}
+
+	protected V get(int i, Object key) {
+		int idx = Arrays.binarySearch(keys, key);
+		if (idx < 0)
+			throw new IllegalArgumentException();
+		
+		return get(i, idx);
+	}
+
+	protected V set(V value, int i, int j) {
+		return array.set(value, i, j);
+	}
+
+	protected V put(int i, K key, V value) {
+		int idx = Arrays.binarySearch(keys, key);
+		if (idx < 0)
+			throw new IllegalArgumentException();
+		
+		return set(value, i, idx);
+	}
+
+	@SuppressWarnings("unchecked")
+	protected V remove(int i, Object key) {
+		return put(i, (K)key, null);
+	}
+
+	protected boolean containsKey(int i, Object key) {
+		return Arrays.binarySearch(keys, key) >= 0;
+	}
+
+	protected K getKey(int i, int j) {
+		return keys[j];
+	}
+	
+	protected int size(int index) {
+		return array.length()[1];
+	}
+	
 	@Override
-	public Map<K, V> get(int index) {
-		return new FixedMap(index);
+	public Map<K, V> get(int i) {
+		return new FixedMap(i);
 	}
 
 	@Override
@@ -55,78 +96,69 @@ public class FixedListMap<K, V> extends AbstractList<Map<K, V>> implements ListM
 	}
 
 	private class FixedMap extends AbstractMap<K, V> {
-		private final int index;
+		private final int i;
 
-		public FixedMap(int index) {
-			this.index = index;
+		public FixedMap(int i) {
+			this.i = i;
 		}
 
 		@Override
 		public Set<Entry<K, V>> entrySet() {
-			return new FixedSet(index);
+			return new FixedSet(i);
 		}
 
 		@Override
 		public V get(Object key) {
-			int idx = Arrays.binarySearch(keys, key);
-			if (idx < 0)
-				throw new IllegalArgumentException();
-			
-			return array.get(index, idx);
+			return FixedListMap.this.get(i, key);
 		}
 
 		@Override
 		public V put(K key, V value) {
-			int idx = Arrays.binarySearch(keys, key);
-			if (idx < 0)
-				throw new IllegalArgumentException();
-			
-			return array.set(value, index, idx);
+			return FixedListMap.this.put(i, key, value);
 		}
 		
-		@SuppressWarnings("unchecked")
 		@Override
 		public V remove(Object key) {
-			return put((K)key, null);
+			return FixedListMap.this.remove(i, key);
 		}
 
 		@Override
 		public boolean containsKey(Object key) {
-			return Arrays.binarySearch(keys, key) >= 0;
+			return FixedListMap.this.containsKey(i, key);
 		}
 	}
 
 	private class FixedSet extends AbstractSet<Entry<K, V>> {
 
-		private final int index;
+		private final int i;
 
-		public FixedSet(int index) {
-			this.index = index;
+		public FixedSet(int i) {
+			this.i = i;
 		}
 
 		@Override
 		public Iterator<Entry<K, V>> iterator() {
-			return new FixedIterator(index);
+			return new FixedIterator(i);
 		}
 
 		@Override
 		public int size() {
-			return array.length()[1];
+			return FixedListMap.this.size(i);
 		}
 	}
 	
 	public class FixedIterator implements Iterator<Entry<K, V>> {
 
-		private final int index;
-		private int key;
+		private final int i;
+		private int j;
 
-		public FixedIterator(int index) {
-			this.index = index;
-			this.key = 0;
+		public FixedIterator(int i) {
+			this.i = i;
+			this.j = 0;
 		}
 
 		public boolean hasNext() {
-			return key < array.length()[1];
+			return j < array.length()[1];
 		}
 
 		public Entry<K, V> next() {
@@ -134,9 +166,9 @@ public class FixedListMap<K, V> extends AbstractList<Map<K, V>> implements ListM
 				throw new NoSuchElementException();
 			
 			try {
-				return new FixedEntry(index, key);
+				return new FixedEntry(i, j);
 			} finally {
-				key++;
+				j++;
 			}
 		}
 
@@ -147,26 +179,25 @@ public class FixedListMap<K, V> extends AbstractList<Map<K, V>> implements ListM
 	
 	public class FixedEntry implements Entry<K, V> {
 
-		private final int index;
-		private final int key;
+		private final int i;
+		private final int j;
 
-		public FixedEntry(int index, int key) {
-			this.index = index;
-			this.key = key;
+		public FixedEntry(int i, int j) {
+			this.i = i;
+			this.j = j;
 		}
 
 		public K getKey() {
-			return keys[key];
+			return FixedListMap.this.getKey(i, j);
 		}
 
 		public V getValue() {
-			return array.get(index, key);
+			return FixedListMap.this.get(i, j);
 		}
 
 		public V setValue(V value) {
-			return array.set(value, index, key);
+			return FixedListMap.this.set(value, i, j);
 		}
 
 	}
-
 }
