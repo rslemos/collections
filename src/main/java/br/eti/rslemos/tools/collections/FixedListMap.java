@@ -25,12 +25,13 @@ import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-public class FixedListMap<K, V> extends AbstractList<Map<K, V>> implements ListMap<K, V> {
+public class FixedListMap<K, V> extends AbstractList<Map<K, V>> implements List<Map<K, V>> {
 
 	private final MultiDimensionalArray<V> array;
 	private final K[] keys;
