@@ -36,7 +36,11 @@ public class FixedSizeListMap<K, V> extends AbstractList<Map<K, V>> implements L
 	private final MultiDimensionalArray<V> array;
 	private final K[] keys;
 
-	public FixedSizeListMap(MultiDimensionalArray<V> array, K... keys) {
+	public FixedSizeListMap(int length, K... keys) {
+		this(new SimplePackedArray<V>(new int[] { length, keys.length }), keys);
+	}
+
+	private FixedSizeListMap(MultiDimensionalArray<V> array, K... keys) {
 		if (array.length()[1] != keys.length)
 			throw new IllegalArgumentException("Second dimension must have exact number of keys");
 		
@@ -52,7 +56,7 @@ public class FixedSizeListMap<K, V> extends AbstractList<Map<K, V>> implements L
 	protected V get(int i, Object key) {
 		int idx = Arrays.binarySearch(keys, key);
 		if (idx < 0)
-			throw new IllegalArgumentException();
+			return null;
 		
 		return get(i, idx);
 	}
@@ -69,9 +73,8 @@ public class FixedSizeListMap<K, V> extends AbstractList<Map<K, V>> implements L
 		return set(value, i, idx);
 	}
 
-	@SuppressWarnings("unchecked")
 	protected V remove(int i, Object key) {
-		return put(i, (K)key, null);
+		throw new UnsupportedOperationException();
 	}
 
 	protected boolean containsKey(int i, Object key) {
@@ -88,7 +91,21 @@ public class FixedSizeListMap<K, V> extends AbstractList<Map<K, V>> implements L
 	
 	@Override
 	public Map<K, V> get(int i) {
-		return new FixedMap(i);
+		if (i >= 0 && i < size())
+			return new FixedMap(i);
+		else
+			throw new IndexOutOfBoundsException();
+	}
+	
+	@Override
+	public Map<K, V> set(int i, Map<K, V> element) {
+		Map<K, V> map = get(i);
+		
+		for (K key : keys) {
+			map.put(key, element.get(key));
+		}
+		
+		return map;
 	}
 
 	@Override
@@ -200,5 +217,40 @@ public class FixedSizeListMap<K, V> extends AbstractList<Map<K, V>> implements L
 			return FixedSizeListMap.this.set(value, i, j);
 		}
 
+		@Override
+		public boolean equals(Object o) {
+			// adapted from java.util.AbstractMap.SimpleEntry.equals(Object)
+			if (!(o instanceof Entry))
+				return false;
+
+			K key = getKey();
+			V value = getValue();
+
+			@SuppressWarnings("rawtypes")
+			Entry e = (Entry)o;
+			return eq(key, e.getKey()) && eq(value, e.getValue());
+		}
+
+		@Override
+		public int hashCode() {
+			// adapted from java.util.AbstractMap.SimpleEntry.hashCode()
+			K key = getKey();
+			V value = getValue();
+
+			return (key   == null ? 0 :   key.hashCode()) ^
+					(value == null ? 0 : value.hashCode());
+		}
+
+		@Override
+		// though not mandated by java.util.Map.Entry
+		public String toString() {
+			// adapted from java.util.AbstractMap.SimpleEntry.toString()
+			return getKey() + "=" + getValue();
+		}
+	}
+
+	private static boolean eq(Object o1, Object o2) {
+		// copied from java.util.AbstractMap.eq(Object, Object)
+		return o1 == null ? o2 == null : o1.equals(o2);
 	}
 }
