@@ -54,23 +54,42 @@ public class MultiDimensionalArrays {
 		return true;
 	}
 
-	static Iterator<int[]> allAddresses(final int[] sizes) {
+	public static Iterator<int[]> allAddresses(int... sizes) {
+		int[] offsets = new int[sizes.length];
+		return allAddresses(offsets, sizes);
+	}
+	
+	public static Iterator<int[]> allAddresses(final int[] from, final int[] to) {
+		if (from.length != to.length)
+			throw new IllegalArgumentException("Wrong number of dimensions");
+		
+		
 		return new MultiDimensionalArrays.AddressIterator() {
 			{
-				if (sizes.length > 0) {
-					next = sizes.clone();
-					Arrays.fill(next, 0);
-				} else {
+				try {
+					if (to.length == 0)
+						throw new NoSuchElementException();
+					
+					for (int i = 0; i < to.length; i++) {
+						if (to[i] < from[i])
+							throw new IllegalArgumentException();
+						
+						if (to[i] == from[i])
+							throw new NoSuchElementException();
+					}
+					
+					next = from.clone();
+				} catch (NoSuchElementException e) {
 					next = null;
 				}
 			}
 			
 			protected void computeNextAddress() {
 				for(int i = next.length - 1; i >= 0; i--) {
-					if (++next[i] < sizes[i]) {
+					if (++next[i] < to[i]) {
 						return;
 					} else {
-						next[i] = 0;
+						next[i] = from[i];
 					}
 				}
 				
