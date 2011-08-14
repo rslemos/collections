@@ -30,6 +30,55 @@ public class MultiDimensionalArrays {
 		throw new UnsupportedOperationException(MultiDimensionalArrays.class + " not instantiable");
 	}
 	
+	public static <T> void copy(MultiDimensionalArray<T> src, MultiDimensionalArray<T> dst) {
+		int[] srcPos = new int[src.dimensions()];
+		int[] dstPos = new int[dst.dimensions()];
+		
+		copy(src, srcPos, dst, dstPos);
+	}
+	
+	public static <T> void copy(MultiDimensionalArray<T> src, int[] srcPos, MultiDimensionalArray<T> dst, int[] dstPos) {
+		int[] length = new int[min(src.dimensions(), srcPos.length, dst.dimensions(), dstPos.length)];
+		
+		for (int i = 0; i < length.length; i++) {
+			length[i] = min(src.length()[i] - srcPos[i], dst.length()[i] - dstPos[i]);
+		}
+		
+		copy(src, srcPos, dst, dstPos, length);
+	}
+	
+	public static <T> void copy(MultiDimensionalArray<T> src, int[] srcFrom, MultiDimensionalArray<T> dst, int[] dstFrom, int[] lengths) {
+		if (src.dimensions() != dst.dimensions())
+			throw new IllegalArgumentException("Wrong number of dimensions (arrays)");
+		
+		if (src.dimensions() != srcFrom.length)
+			throw new IllegalArgumentException("Wrong number of dimensions (source offset)");
+			
+		if (dst.dimensions() != dstFrom.length)
+			throw new IllegalArgumentException("Wrong number of dimensions (destination offset)");
+		
+		if (srcFrom.length != lengths.length)
+			throw new IllegalArgumentException("Wrong number of dimensions (lengths)");
+		
+		int[] srcTo = new int[srcFrom.length];
+		int[] dstTo = new int[dstFrom.length];
+		
+		for (int i = 0; i < lengths.length; i++) {
+			srcTo[i] = srcFrom[i] + lengths[i];
+			dstTo[i] = dstFrom[i] + lengths[i];
+		}
+		// most general copy
+		Iterator<int[]> srcAddresses = allAddresses(srcFrom, srcTo);
+		Iterator<int[]> dstAddresses = allAddresses(dstFrom, dstTo);
+		
+		while (srcAddresses.hasNext()) {
+			int[] srcAddress = srcAddresses.next();
+			int[] dstAddress = dstAddresses.next();
+			
+			dst.set(src.get(srcAddress), dstAddress);
+		}
+	}
+	
 	public static <T> boolean equals(MultiDimensionalArray<T> a, MultiDimensionalArray<T> b) {
 		return elementWiseEquals(a, b);
 	}
@@ -97,7 +146,18 @@ public class MultiDimensionalArrays {
 			}
 		};
 	}
-	
+
+	private static int min(int... n) {
+		int result = n[0];
+		
+		for (int i = 1; i < n.length; i++) {
+			if (n[i] < result)
+				result = n[i];
+		}
+		
+		return result;
+	}
+
 	static abstract class AddressIterator implements Iterator<int[]> {
 		public int[] next;
 	

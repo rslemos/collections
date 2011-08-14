@@ -292,6 +292,204 @@ public class MultiDimensionalArraysUnitTest {
 			assertThat(addresses, is(equalTo(NO_ADDRESSES)));
 		}
 	}
+	
+	public static class Copy {
+		
+		@Mock MultiDimensionalArray<Object> source;
+		@Mock MultiDimensionalArray<Object> destination;
+		
+		@Before
+		public void setUp() {
+			MockitoAnnotations.initMocks(this);
+		}
+		
+		@After
+		public void tearDown() {
+			verifyNoMoreInteractions(source);
+			verifyNoMoreInteractions(destination);
+		}
+		
+		@Test
+		public void testZeroCopy() {
+			setupLengths(source);
+			setupLengths(destination);
+			
+			MultiDimensionalArrays.copy(source, destination);
+			
+			verify(source, atLeastOnce()).dimensions();
+			verify(destination, atLeastOnce()).dimensions();
+		}
+	
+		@Test
+		public void testOneDimensionNoElements() {
+			setupLengths(source, 0);
+			setupLengths(destination, 0);
+			
+			MultiDimensionalArrays.copy(source, destination);
+			
+			verify(source, atLeastOnce()).dimensions();
+			verify(destination, atLeastOnce()).dimensions();
+	
+			verify(source, atLeastOnce()).length();
+			verify(destination, atLeastOnce()).length();
+		}
+		
+		@Test
+		public void testOneDimensionSingleElement() {
+			setupLengths(source, 1);
+			setupLengths(destination, 1);
+			
+			Object data = new Object();
+			
+			when(source.get(0)).thenReturn(data);
+	
+			MultiDimensionalArrays.copy(source, destination);
+			
+			verify(source, atLeastOnce()).dimensions();
+			verify(destination, atLeastOnce()).dimensions();
+	
+			verify(source, atLeastOnce()).length();
+			verify(destination, atLeastOnce()).length();
+	
+			verify(source).get(0);
+			verify(destination).set(data, 0);
+		}
+	
+		@Test
+		public void testTwoDimensionsSingleElement() {
+			setupLengths(source, 1, 1);
+			setupLengths(destination, 1, 1);
+			
+			Object data = new Object();
+			
+			when(source.get(0, 0)).thenReturn(data);
+	
+			MultiDimensionalArrays.copy(source, destination);
+			
+			verify(source, atLeastOnce()).dimensions();
+			verify(destination, atLeastOnce()).dimensions();
+	
+			verify(source, atLeastOnce()).length();
+			verify(destination, atLeastOnce()).length();
+	
+			verify(source).get(0, 0);
+			verify(destination).set(data, 0, 0);
+		}
+		
+		@Test
+		public void testOneDimensionTwoElements() {
+			setupLengths(source, 2);
+			setupLengths(destination, 2);
+			
+			Object data0 = new Object();
+			Object data1 = new Object();
+			
+			when(source.get(0)).thenReturn(data0);
+			when(source.get(1)).thenReturn(data1);
+	
+			MultiDimensionalArrays.copy(source, destination);
+			
+			verify(source, atLeastOnce()).dimensions();
+			verify(destination, atLeastOnce()).dimensions();
+	
+			verify(source, atLeastOnce()).length();
+			verify(destination, atLeastOnce()).length();
+	
+			verify(source).get(0);
+			verify(source).get(1);
+			verify(destination).set(data0, 0);
+			verify(destination).set(data1, 1);
+		}
+	
+		@Test
+		public void testTwoDimensionsFourElements() {
+			setupLengths(source, 2, 2);
+			setupLengths(destination, 2, 2);
+			
+			Object data00 = new Object();
+			Object data01 = new Object();
+			Object data10 = new Object();
+			Object data11 = new Object();
+			
+			when(source.get(0, 0)).thenReturn(data00);
+			when(source.get(0, 1)).thenReturn(data01);
+			when(source.get(1, 0)).thenReturn(data10);
+			when(source.get(1, 1)).thenReturn(data11);
+	
+			MultiDimensionalArrays.copy(source, destination);
+			
+			verify(source, atLeastOnce()).dimensions();
+			verify(destination, atLeastOnce()).dimensions();
+	
+			verify(source, atLeastOnce()).length();
+			verify(destination, atLeastOnce()).length();
+	
+			verify(source).get(0, 0);
+			verify(source).get(0, 1);
+			verify(source).get(1, 0);
+			verify(source).get(1, 1);
+			verify(destination).set(data00, 0, 0);
+			verify(destination).set(data01, 0, 1);
+			verify(destination).set(data10, 1, 0);
+			verify(destination).set(data11, 1, 1);
+		}
+		
+		@Test
+		public void testTwoDimensionsFourElementsWithOffsets() {
+			setupLengths(source, 4, 4);
+			setupLengths(destination, 4, 4);
+			
+			Object data22 = new Object();
+			Object data23 = new Object();
+			Object data32 = new Object();
+			Object data33 = new Object();
+			
+			when(source.get(2, 2)).thenReturn(data22);
+			when(source.get(2, 3)).thenReturn(data23);
+			when(source.get(3, 2)).thenReturn(data32);
+			when(source.get(3, 3)).thenReturn(data33);
+	
+			MultiDimensionalArrays.copy(source, new int[] {2, 2}, destination, new int[] {2, 2});
+			
+			verify(source, atLeastOnce()).dimensions();
+			verify(destination, atLeastOnce()).dimensions();
+	
+			verify(source, atLeastOnce()).length();
+			verify(destination, atLeastOnce()).length();
+	
+			verify(source).get(2, 2);
+			verify(source).get(2, 3);
+			verify(source).get(3, 2);
+			verify(source).get(3, 3);
+			verify(destination).set(data22, 2, 2);
+			verify(destination).set(data23, 2, 3);
+			verify(destination).set(data32, 3, 2);
+			verify(destination).set(data33, 3, 3);
+		}
+		
+		@Test
+		public void testTwoDimensionsFourElementsWithOffsetsAndLengths() {
+			setupLengths(source, 4, 4);
+			setupLengths(destination, 4, 4);
+			
+			Object data22 = new Object();
+			
+			when(source.get(2, 2)).thenReturn(data22);
+	
+			MultiDimensionalArrays.copy(source, new int[] {2, 2}, destination, new int[] {2, 2}, new int[] {1, 1});
+			
+			verify(source, atLeastOnce()).dimensions();
+			verify(destination, atLeastOnce()).dimensions();
+	
+			verify(source).get(2, 2);
+			verify(destination).set(data22, 2, 2);
+		}
+		
+		private static <T> void setupLengths(MultiDimensionalArray<T> array, int... lengths) {
+			when(array.dimensions()).thenReturn(lengths.length);
+			when(array.length()).thenReturn(lengths);
+		}
+	}
 
 	private static <T> List<T> asList(Iterator<T> it) {
 		ArrayList<T> list = new ArrayList<T>();
