@@ -25,7 +25,7 @@ import java.util.Iterator;
 
 public class SimplePackedArray<T> implements MultiDimensionalArray<T> {
 	protected final int[] sizes;
-	protected final T[] data;
+	final T[] data;
 
 	protected SimplePackedArray(T[] data, int... sizes) {
 		this.data = data;

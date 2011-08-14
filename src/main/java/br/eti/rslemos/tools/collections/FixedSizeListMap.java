@@ -33,14 +33,14 @@ import java.util.Set;
 
 public class FixedSizeListMap<K, V> extends AbstractList<Map<K, V>> implements List<Map<K, V>> {
 
-	private final MultiDimensionalArray<V> array;
-	private final K[] keys;
+	protected MultiDimensionalArray<V> array;
+	protected final K[] keys;
 
 	public FixedSizeListMap(int length, K... keys) {
-		this(new SimplePackedArray<V>(new int[] { length, keys.length }), keys);
+		this(new SimplePackedArray<V>(length, keys.length), keys);
 	}
 
-	private FixedSizeListMap(MultiDimensionalArray<V> array, K... keys) {
+	protected FixedSizeListMap(MultiDimensionalArray<V> array, K... keys) {
 		if (array.length()[1] != keys.length)
 			throw new IllegalArgumentException("Second dimension must have exact number of keys");
 		
