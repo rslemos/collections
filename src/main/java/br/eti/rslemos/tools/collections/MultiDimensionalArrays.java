@@ -67,7 +67,25 @@ public class MultiDimensionalArrays {
 			srcTo[i] = srcFrom[i] + lengths[i];
 			dstTo[i] = dstFrom[i] + lengths[i];
 		}
+		
 		// most general copy
+
+		if (src == dst) {
+			for (int i = 0; i < lengths.length; i++) {
+				if (srcFrom[i] < dstFrom[i]) {
+					int tmp;
+					
+					tmp = srcTo[i];
+					srcTo[i] = srcFrom[i];
+					srcFrom[i] = tmp;
+					
+					tmp = dstTo[i];
+					dstTo[i] = dstFrom[i];
+					dstFrom[i] = tmp;
+				}
+			}
+		}
+		
 		Iterator<int[]> srcAddresses = allAddresses(srcFrom, srcTo);
 		Iterator<int[]> dstAddresses = allAddresses(dstFrom, dstTo);
 		
@@ -108,23 +126,36 @@ public class MultiDimensionalArrays {
 		return allAddresses(offsets, sizes);
 	}
 	
-	public static Iterator<int[]> allAddresses(final int[] from, final int[] to) {
-		if (from.length != to.length)
+	public static Iterator<int[]> allAddresses(int[] from0, int[] to0) {
+		
+		if (from0.length != to0.length)
 			throw new IllegalArgumentException("Wrong number of dimensions");
 		
+		final int[] from = from0.clone();
+		final int[] to = to0.clone();
 		
 		return new MultiDimensionalArrays.AddressIterator() {
+			private int[] incr;
+			
 			{
+				incr = new int[from.length];
+				
 				try {
 					if (to.length == 0)
 						throw new NoSuchElementException();
 					
 					for (int i = 0; i < to.length; i++) {
-						if (to[i] < from[i])
-							throw new IllegalArgumentException();
-						
 						if (to[i] == from[i])
 							throw new NoSuchElementException();
+						
+						if (to[i] < from[i]) {
+							incr[i] = -1;
+							from[i]--;
+						} else {
+							incr[i] = +1;
+							to[i]--;
+						}
+						
 					}
 					
 					next = from.clone();
@@ -135,7 +166,9 @@ public class MultiDimensionalArrays {
 			
 			protected void computeNextAddress() {
 				for(int i = next.length - 1; i >= 0; i--) {
-					if (++next[i] < to[i]) {
+					next[i] += incr[i];
+					
+					if (next[i]*incr[i] <= to[i]*incr[i]) {
 						return;
 					} else {
 						next[i] = from[i];
