@@ -59,6 +59,7 @@
 
 	<scm>
 		<url>git@github.com:rslemos/collections.git</url>
+		<developerConnection>scm:git:git://github.com/rslemos/collections.git</developerConnection>
 	</scm>
 
 	<dependencies>
