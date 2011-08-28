@@ -26,7 +26,6 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
-import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -198,11 +197,11 @@ public class FixedKeysListMapUnitTest extends TestCase {
 		}
 		
 		public SampleElements<Entry<String, String>> samples() {
-			Entry<String, String> e0 = new AbstractMap.SimpleEntry<String, String>("A", "value for A");
-			Entry<String, String> e1 = new AbstractMap.SimpleEntry<String, String>("B", "value for B");
-			Entry<String, String> e2 = new AbstractMap.SimpleEntry<String, String>("C", "value for C");
-			Entry<String, String> e3 = new AbstractMap.SimpleEntry<String, String>("D", "value for D");
-			Entry<String, String> e4 = new AbstractMap.SimpleEntry<String, String>("E", "value for E");;
+			Entry<String, String> e0 = new SimpleEntry<String, String>("A", "value for A");
+			Entry<String, String> e1 = new SimpleEntry<String, String>("B", "value for B");
+			Entry<String, String> e2 = new SimpleEntry<String, String>("C", "value for C");
+			Entry<String, String> e3 = new SimpleEntry<String, String>("D", "value for D");
+			Entry<String, String> e4 = new SimpleEntry<String, String>("E", "value for E");;
 			return new SampleElements<Entry<String,String>>(e0, e1, e2, e3, e4);
 		}
 

@@ -22,7 +22,6 @@ package br.eti.rslemos.tools.collections;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.TreeMap;
 
 public class FixedKeysListMap<K, V> extends FixedSizeListMap<K, V> {
 

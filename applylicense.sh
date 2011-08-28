@@ -25,6 +25,7 @@ EOF
 EXCLUSIONS=`cat << EOF
 COPYING
 applylicense.sh
+src/test/java/br/eti/rslemos/tools/collections/SimpleEntry.java
 EOF`
 
 NOTICEMARKERSREGEXP="\(BEGIN\|END\) COPYRIGHT NOTICE"
