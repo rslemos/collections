@@ -98,23 +98,10 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- 
-			google-collect-testfw is not found on any public repository.
-			We can't wait for guava-r10 (which is google-collections successor).
-			
-			How to get it?
-			
-			- download sources from public svn repository:
-			    http://google-collections.googlecode.com/svn/trunk/
-			- compile testfw:
-			    ant testfw
-			- package classes and sources
-			- use mvn install:install-file to install packages on maven local repo			
-		 -->
 		<dependency>
-			<groupId>com.google.code.google-collections</groupId>
-			<artifactId>google-collect-testfw</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava-testlib</artifactId>
+			<version>10.0</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
