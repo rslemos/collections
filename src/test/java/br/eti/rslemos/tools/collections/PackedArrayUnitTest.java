@@ -54,6 +54,10 @@ public abstract class PackedArrayUnitTest extends MultiDimensionalArrayAbstractU
 		protected String[] createModel() {
 			return model;
 		}
+		
+		public static class ConstructorFromItself extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromItself<String> {}
+		public static class ConstructorFromKnownGoodImplementation extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromKnownGoodImplementation<String> {}
+		public static class ConstructorFromRawModel extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromRawModel<String> {}
 	}
 
 	public static class OneDimension extends PackedArrayUnitTest {
@@ -99,6 +103,10 @@ public abstract class PackedArrayUnitTest extends MultiDimensionalArrayAbstractU
 			assertThat(oneDimArray.computeAddress(3), is(equalTo(3)));
 			assertThat(oneDimArray.computeAddress(4), is(equalTo(4)));
 		}
+		
+		public static class ConstructorFromItself extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromItself<String> {}
+		public static class ConstructorFromKnownGoodImplementation extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromKnownGoodImplementation<String> {}
+		public static class ConstructorFromRawModel extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromRawModel<String> {}
 	}
 	
 	public static class TwoDimensions extends PackedArrayUnitTest {
@@ -170,6 +178,10 @@ public abstract class PackedArrayUnitTest extends MultiDimensionalArrayAbstractU
 			assertThat(twoDimArrayLE.computeAddress(1, 2), is(equalTo(7)));
 			assertThat(twoDimArrayLE.computeAddress(2, 2), is(equalTo(8)));
 		}
+		
+		public static class ConstructorFromItself extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromItself<String> {}
+		public static class ConstructorFromKnownGoodImplementation extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromKnownGoodImplementation<String> {}
+		public static class ConstructorFromRawModel extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromRawModel<String> {}
 	}
 
 	public static class ThreeDimensions extends PackedArrayUnitTest {
@@ -233,6 +245,10 @@ public abstract class PackedArrayUnitTest extends MultiDimensionalArrayAbstractU
 			MultiDimensionalArray<String> swap02 = array.swap(0, 2);
 			assertThatTheyAreEquals(transposition, swap02);
 		}
+		
+		public static class ConstructorFromItself extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromItself<String> {}
+		public static class ConstructorFromKnownGoodImplementation extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromKnownGoodImplementation<String> {}
+		public static class ConstructorFromRawModel extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromRawModel<String> {}
 	}
 
 	public static class FourDimensions extends PackedArrayUnitTest {
@@ -274,6 +290,10 @@ public abstract class PackedArrayUnitTest extends MultiDimensionalArrayAbstractU
 		protected String[][][][] createModel() {
 			return model;
 		}
+		
+		public static class ConstructorFromItself extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromItself<String> {}
+		public static class ConstructorFromKnownGoodImplementation extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromKnownGoodImplementation<String> {}
+		public static class ConstructorFromRawModel extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromRawModel<String> {}
 	}
 
 	public static class FiveDimensions extends PackedArrayUnitTest {
@@ -316,6 +336,10 @@ public abstract class PackedArrayUnitTest extends MultiDimensionalArrayAbstractU
 		protected String[][][][][] createModel() {
 			return model;
 		}
+		
+		public static class ConstructorFromItself extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromItself<String> {}
+		public static class ConstructorFromKnownGoodImplementation extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromKnownGoodImplementation<String> {}
+		public static class ConstructorFromRawModel extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromRawModel<String> {}
 	}
 
 	protected String createSample() {

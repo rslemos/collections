@@ -38,13 +38,15 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
-	private MultiDimensionalArray<V> subject;
-	private int[] sizes;
-	private Object rawModel;
-	private JavaArrayMultiDimensionalArray<V> model;
+
+	protected JavaArrayMultiDimensionalArray<V> model;
+	protected MultiDimensionalArray<V> subject;
+	protected int[] sizes;
+	protected Object rawModel;
 
 	@Before
 	public void setUp() {
@@ -53,7 +55,7 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 		rawModel = createModel();
 		model = new JavaArrayMultiDimensionalArray<V>(rawModel, sizes);
 	}
-	
+
 	protected abstract MultiDimensionalArray<V> createArray();
 
 	protected abstract int[] createLengths();
@@ -61,12 +63,12 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 	protected abstract Object createModel();
 
 	protected abstract V createSample();
-	
+
 	@Test
 	public void testDimensions() {
 		assertThat(subject.dimensions(), is(equalTo(sizes.length)));
 	}
-	
+
 	@Test
 	public void testLength() {
 		assertThat(subject.length(), is(equalTo(sizes)));
@@ -75,7 +77,7 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 	@Test
 	public void testLengthsAreSecurelyIsolated() {
 		int[] lengths = subject.length();
-
+	
 		assumeThat(lengths.length, is(greaterThan(0)));
 		
 		lengths[0]++;
@@ -121,7 +123,7 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 			assertThat(subject.get(address), is(sameInstance(newData)));
 		}
 	}
-	
+
 	@Test
 	public void testSetEachElementAlongBoundaryAddress() {
 		Iterator<int[]> addresses = allBoundaryAddresses();
@@ -159,52 +161,10 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 	}
 
 	@Test
-	public void testConstructorFromItself() {
-		MultiDimensionalArray<V> array = newFromMultiDimensionalArray(subject);
-		
-		assertThat(elementWiseEquals(subject, array), is(equalTo(true)));
-		runAllTests(array);
-	}
-
-	@Test
-	public void testConstructorFromKnownGoodImplementation() {
-		MultiDimensionalArray<V> array = newFromMultiDimensionalArray(model);
-		
-		assertThat(elementWiseEquals(subject, array), is(equalTo(true)));
-		runAllTests(array);
-	}
-	
-	@Test
-	public void testConstructorFromRawModel() {
-		MultiDimensionalArray<V> array = newFromJavaArray(rawModel, sizes);
-		
-		assertThat(elementWiseEquals(subject, array), is(equalTo(true)));
-		runAllTests(array);
-	}
-	
-	@Test
-	public void testConstructorFromEmptyModel() {
-		assumeThat(rawModel, is(not(nullValue(Object.class))));
-		Object emptyModel = Array.newInstance(rawModel.getClass().getComponentType(), 0);
-		MultiDimensionalArray<V> array = newFromJavaArray(emptyModel, sizes);
-
-		model = new JavaArrayMultiDimensionalArray<V>(emptyModel, sizes);
-		subject = array;
-		
-		testDimensions();
-		testLength();
-		testLengthsAreSecurelyIsolated();
-		testGetEachElementAtValidAddress();
-		testGetEachElementAlongBoundaryAddress();
-		testSetEachElementAtValidAddress();
-		testSetEachElementAlongBoundaryAddress();
-	}
-
-	@Test
 	public void testHashCode() {
 		assertThat(subject.hashCode(), is(equalTo(Arrays.deepHashCode((Object[]) rawModel))));
 	}
-	
+
 	@Test
 	public void testToString() {
 		assertThat(subject.toString(), is(equalTo(Arrays.deepToString((Object[]) rawModel))));
@@ -214,7 +174,7 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 	public void testNotEqualsToNull() {
 		assertThat(subject.equals(null), is(equalTo(false)));
 	}
-	
+
 	@Test
 	public void testEqualsToItself() {
 		assertThat(subject.equals(subject), is(equalTo(true)));
@@ -224,7 +184,7 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 	public void testEqualsToCopyOfItself() {
 		assertThat(subject.equals(newFromMultiDimensionalArray(subject)), is(equalTo(true)));
 	}
-	
+
 	@Test
 	public void testNotEqualsToModifiedCopyOfItself() {
 		MultiDimensionalArray<V> copy = newFromMultiDimensionalArray(subject);
@@ -239,7 +199,7 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 	public void testEqualsToModel() {
 		assertThat(subject.equals(model), is(equalTo(true)));
 	}
-	
+
 	@Test
 	public void testNotEqualsToModifiedModel() {
 		MultiDimensionalArray<V> copy = model;
@@ -249,26 +209,14 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 		copy.set(createSample(), zero);
 		assertThat(subject.equals(copy), is(equalTo(false)));
 	}
-	
+
 	@Test
 	public void testNotEqualsToSomethingElse() {
 		assertThat(subject.equals(new Object()), is(equalTo(false)));
 	}
-	
-	private void runAllTests(MultiDimensionalArray<V> array) {
-		subject = array;
-		testDimensions();
-		testLength();
-		testLengthsAreSecurelyIsolated();
-		testCellIndependency(); // should be the first to change data, since it is very picky about contents
-		testGetEachElementAtValidAddress();
-		testGetEachElementAlongBoundaryAddress();
-		testSetEachElementAtValidAddress();
-		testSetEachElementAlongBoundaryAddress();
-	}
 
 	@SuppressWarnings("unchecked")
-	private MultiDimensionalArray<V> newFromMultiDimensionalArray(MultiDimensionalArray<V> source) {
+	protected MultiDimensionalArray<V> newFromMultiDimensionalArray(MultiDimensionalArray<V> source) {
 		@SuppressWarnings("rawtypes")
 		Class<? extends MultiDimensionalArray> clazz = subject.getClass();
 		
@@ -290,9 +238,9 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 		}
 		return array;
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	private MultiDimensionalArray<V> newFromJavaArray(Object source, int... sizes) {
+	protected MultiDimensionalArray<V> newFromJavaArray(Object source, int... sizes) {
 		@SuppressWarnings("rawtypes")
 		Class<? extends MultiDimensionalArray> clazz = subject.getClass();
 		
@@ -314,7 +262,7 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 		}
 		return array;
 	}
-	
+
 	private Iterator<int[]> allBoundaryAddresses() {
 		return new MultiDimensionalArrays.AddressIterator() {
 			{
@@ -336,7 +284,7 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 				
 				next = null;
 			}
-
+	
 			private boolean isValidAddress(int[] address) {
 				for (int i = 0; i < address.length; i++) {
 					if (address[i] < 0 || address[i] >= sizes[i])
@@ -346,7 +294,7 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 			}
 		};
 	}
-
+	
 	public static <V, E extends RuntimeException> void getAndExpect(Class<E> clazz, MultiDimensionalArray<V> array, int... pos) {
 		try {
 			array.get(pos);
@@ -366,4 +314,91 @@ public abstract class MultiDimensionalArrayAbstractUnitTest<V> {
 				throw expected;
 		}
 	}
+
+	private static class RecursiveUnitTest<V> extends MultiDimensionalArrayAbstractUnitTest<V> {
+		private MultiDimensionalArrayAbstractUnitTest<V> enclosing;
+		
+		@Before
+		@SuppressWarnings("unchecked")
+		public void setUp() {
+			try {
+				enclosing = ((Class<? extends MultiDimensionalArrayAbstractUnitTest<V>>) this.getClass().getEnclosingClass()).newInstance();
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+			
+			super.setUp();
+		}
+
+		@Override
+		protected MultiDimensionalArray<V> createArray() {
+			return enclosing.createArray();
+		}
+
+		@Override
+		protected int[] createLengths() {
+			return enclosing.createLengths();
+		}
+
+		@Override
+		protected Object createModel() {
+			return enclosing.createModel();
+		}
+
+		@Override
+		protected V createSample() {
+			return enclosing.createSample();
+		}
+	}
+
+	public abstract static class ConstructorFromItself<V> extends RecursiveUnitTest<V> {
+		@Before
+		public void setUp() {
+			super.setUp();
+			
+			MultiDimensionalArray<V> array = newFromMultiDimensionalArray(subject);
+			
+			assertThat(elementWiseEquals(subject, array), is(equalTo(true)));
+			subject = array;
+		}
+
+	}
+
+	public abstract static class ConstructorFromKnownGoodImplementation<V> extends RecursiveUnitTest<V> {
+		@Before
+		public void setUp() {
+			super.setUp();
+			MultiDimensionalArray<V> array = newFromMultiDimensionalArray(model);
+			
+			assertThat(elementWiseEquals(subject, array), is(equalTo(true)));
+			subject = array;
+		}
+	}
+
+	public abstract static class ConstructorFromRawModel<V> extends RecursiveUnitTest<V> {
+		@Before
+		public void setUp() {
+			super.setUp();
+			MultiDimensionalArray<V> array = newFromJavaArray(rawModel, sizes);
+			
+			assertThat(elementWiseEquals(subject, array), is(equalTo(true)));
+			subject = array;
+		}
+	}
+
+	@Ignore // don't know what this is actually testing
+	public abstract static class ConstructorFromEmptyModel<V> extends RecursiveUnitTest<V> {
+		@Before
+		public void setUp() {
+			super.setUp();
+			assumeThat(rawModel, is(not(nullValue(Object.class))));
+			Object emptyModel = Array.newInstance(rawModel.getClass().getComponentType(), 0);
+			rawModel = emptyModel;
+			MultiDimensionalArray<V> array = newFromJavaArray(emptyModel, sizes);
+	
+			model = new JavaArrayMultiDimensionalArray<V>(emptyModel, sizes);
+			subject = array;
+		}
+	}
+
 }

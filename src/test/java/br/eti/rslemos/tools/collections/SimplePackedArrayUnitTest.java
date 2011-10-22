@@ -54,6 +54,10 @@ public abstract class SimplePackedArrayUnitTest extends MultiDimensionalArrayAbs
 		protected String[] createModel() {
 			return model;
 		}
+		
+		public static class ConstructorFromItself extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromItself<String> {}
+		public static class ConstructorFromKnownGoodImplementation extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromKnownGoodImplementation<String> {}
+		public static class ConstructorFromRawModel extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromRawModel<String> {}
 	}
 
 	public static class OneDimension extends SimplePackedArrayUnitTest {
@@ -99,6 +103,10 @@ public abstract class SimplePackedArrayUnitTest extends MultiDimensionalArrayAbs
 			assertThat(oneDimArray.computeAddress(3), is(equalTo(3)));
 			assertThat(oneDimArray.computeAddress(4), is(equalTo(4)));
 		}
+		
+		public static class ConstructorFromItself extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromItself<String> {}
+		public static class ConstructorFromKnownGoodImplementation extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromKnownGoodImplementation<String> {}
+		public static class ConstructorFromRawModel extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromRawModel<String> {}
 	}
 	
 	public static class TwoDimensions extends SimplePackedArrayUnitTest {
@@ -158,6 +166,10 @@ public abstract class SimplePackedArrayUnitTest extends MultiDimensionalArrayAbs
 			assertThat(rowMajor.computeAddress(2, 1), is(equalTo(7)));
 			assertThat(rowMajor.computeAddress(2, 2), is(equalTo(8)));
 		}
+		
+		public static class ConstructorFromItself extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromItself<String> {}
+		public static class ConstructorFromKnownGoodImplementation extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromKnownGoodImplementation<String> {}
+		public static class ConstructorFromRawModel extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromRawModel<String> {}
 	}
 
 	public static class ThreeDimensions extends SimplePackedArrayUnitTest {
@@ -210,6 +222,10 @@ public abstract class SimplePackedArrayUnitTest extends MultiDimensionalArrayAbs
 			assertThat(threeDimArray.computeAddress(1, 1, 0), is(equalTo(6)));
 			assertThat(threeDimArray.computeAddress(1, 1, 1), is(equalTo(7)));
 		}
+		
+		public static class ConstructorFromItself extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromItself<String> {}
+		public static class ConstructorFromKnownGoodImplementation extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromKnownGoodImplementation<String> {}
+		public static class ConstructorFromRawModel extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromRawModel<String> {}
 	}
 
 	public static class FourDimensions extends SimplePackedArrayUnitTest {
@@ -251,6 +267,10 @@ public abstract class SimplePackedArrayUnitTest extends MultiDimensionalArrayAbs
 		protected String[][][][] createModel() {
 			return model;
 		}
+		
+		public static class ConstructorFromItself extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromItself<String> {}
+		public static class ConstructorFromKnownGoodImplementation extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromKnownGoodImplementation<String> {}
+		public static class ConstructorFromRawModel extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromRawModel<String> {}
 	}
 
 	public static class FiveDimensions extends SimplePackedArrayUnitTest {
@@ -293,6 +313,10 @@ public abstract class SimplePackedArrayUnitTest extends MultiDimensionalArrayAbs
 		protected String[][][][][] createModel() {
 			return model;
 		}
+		
+		public static class ConstructorFromItself extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromItself<String> {}
+		public static class ConstructorFromKnownGoodImplementation extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromKnownGoodImplementation<String> {}
+		public static class ConstructorFromRawModel extends MultiDimensionalArrayAbstractUnitTest.ConstructorFromRawModel<String> {}
 	}
 
 	protected String createSample() {
