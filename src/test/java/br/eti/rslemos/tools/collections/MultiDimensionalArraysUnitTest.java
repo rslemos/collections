@@ -35,31 +35,16 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-public class MultiDimensionalArraysUnitTest extends TestCase {
+public abstract class MultiDimensionalArraysUnitTest {
 	
-	public static TestSuite suite() {
-		TestSuite suite = new TestSuite(MultiDimensionalArraysUnitTest.class);
-		
-		suite.addTestSuite(AddressIterator.class);
-		suite.addTestSuite(Copy.class);
-		
-		return suite;
-	}
-	
-	@Ignore public void testIgnore() {}
-
-	public static class AddressIterator extends TestCase {
+	public static class AddressIterator {
 		private static final List<int[]> NO_ADDRESSES = Collections.emptyList();
 		
 		private List<int[]> addresses;
@@ -354,7 +339,7 @@ public class MultiDimensionalArraysUnitTest extends TestCase {
 		}
 	}
 	
-	public static class Copy extends TestCase {
+	public static class Copy {
 		
 		@Mock MultiDimensionalArray<Object> source;
 		@Mock MultiDimensionalArray<Object> destination;
