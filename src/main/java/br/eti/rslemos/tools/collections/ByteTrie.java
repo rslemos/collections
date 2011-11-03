@@ -20,7 +20,7 @@
  ******************************************************************************/
 package br.eti.rslemos.tools.collections;
 
-public interface ByteTrie {
+public interface ByteTrie extends Iterable<byte[]>{
 
 	boolean has(byte... b);
 
