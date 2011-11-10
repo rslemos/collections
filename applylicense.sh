@@ -136,7 +136,7 @@ do
 		*)
 			MAGIC="`file -b "$FILE"`"
 			case "$MAGIC" in
-				"XML  document text")
+				"XML  document text" | "XML document text")
 					applyXML "$FILE"
 					;;
 				"ASCII text" | "POSIX shell script text executable")
