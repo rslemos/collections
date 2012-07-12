@@ -22,13 +22,19 @@ package br.eti.rslemos.tools.collections;
 
 public interface MultiDimensionalArray<T> {
 
+	// informational methods
+
+	int dimensions();
+
+	int[] length();
+
+	// storage methods
+
 	T get(int... pos);
 
 	T set(T element, int... pos);
 
-	int[] length();
-
-	int dimensions();
+	// view methods
 
 	MultiDimensionalArray<T> slice(int dimension, int from, int to);
 

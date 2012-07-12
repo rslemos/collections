@@ -30,18 +30,17 @@ public class JavaArrayMultiDimensionalArray<T> implements MultiDimensionalArray<
 		this.lengths = lengths;
 	}
 
-	private void checkBoundaries(int... pos) {
-		if (pos.length != lengths.length)
-			throw new IllegalArgumentException("Wrong number of dimensions: " + pos.length);
-		
-		if (lengths.length > 0) {
-			for (int i = 0; i < lengths.length; i++) {
-				if (pos[i] < 0 || pos[i] >= lengths[i])
-					throw new ArrayIndexOutOfBoundsException(pos[i]);
-			}
-		} else
-			throw new ArrayIndexOutOfBoundsException();
+	// informational methods
+
+	public int[] length() {
+		return lengths.clone();
 	}
+
+	public int dimensions() {
+		return lengths.length;
+	}
+
+	// storage methods
 
 	@SuppressWarnings("unchecked")
 	public T get(int... pos) {
@@ -79,13 +78,7 @@ public class JavaArrayMultiDimensionalArray<T> implements MultiDimensionalArray<
 		}
 	}
 
-	public int[] length() {
-		return lengths.clone();
-	}
-
-	public int dimensions() {
-		return lengths.length;
-	}
+	// view methods
 
 	public MultiDimensionalArray<T> slice(int dimension, int from, int to) {
 		throw new UnsupportedOperationException();
@@ -99,4 +92,18 @@ public class JavaArrayMultiDimensionalArray<T> implements MultiDimensionalArray<
 		throw new UnsupportedOperationException();
 	}
 
+	// auxiliary methods
+
+	private void checkBoundaries(int... pos) {
+		if (pos.length != lengths.length)
+			throw new IllegalArgumentException("Wrong number of dimensions: " + pos.length);
+		
+		if (lengths.length > 0) {
+			for (int i = 0; i < lengths.length; i++) {
+				if (pos[i] < 0 || pos[i] >= lengths[i])
+					throw new ArrayIndexOutOfBoundsException(pos[i]);
+			}
+		} else
+			throw new ArrayIndexOutOfBoundsException();
+	}
 }

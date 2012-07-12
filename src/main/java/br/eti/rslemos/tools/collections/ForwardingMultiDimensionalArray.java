@@ -28,21 +28,27 @@ public class ForwardingMultiDimensionalArray<T> implements MultiDimensionalArray
 		this.delegate = delegate;
 	}
 
+	// informational methods
+	
 	public int dimensions() {
 		return delegate.dimensions();
-	}
-
-	public T get(int... pos) {
-		return delegate.get(pos);
 	}
 
 	public int[] length() {
 		return delegate.length();
 	}
 
+	// storage methods
+
+	public T get(int... pos) {
+		return delegate.get(pos);
+	}
+
 	public T set(T element, int... pos) {
 		return delegate.set(element, pos);
 	}
+
+	// view methods
 
 	public MultiDimensionalArray<T> slice(int dimension, int from, int to) {
 		return delegate.slice(dimension, from, to);
@@ -55,6 +61,8 @@ public class ForwardingMultiDimensionalArray<T> implements MultiDimensionalArray
 	public MultiDimensionalArray<T> transpose() {
 		return delegate.transpose();
 	}
+
+	// java.lang.Object methods
 
 	@Override
 	public boolean equals(Object obj) {
@@ -70,6 +78,4 @@ public class ForwardingMultiDimensionalArray<T> implements MultiDimensionalArray
 	public String toString() {
 		return delegate.toString();
 	}
-
-	
 }

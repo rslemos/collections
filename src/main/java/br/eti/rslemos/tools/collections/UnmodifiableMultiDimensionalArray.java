@@ -26,10 +26,14 @@ public class UnmodifiableMultiDimensionalArray<T> extends ForwardingMultiDimensi
 		super(delegate);
 	}
 
+	// storage methods
+
 	@Override
 	public T set(T element, int... pos) {
 		throw new UnsupportedOperationException();
 	}
+
+	// view methods
 
 	@Override
 	public MultiDimensionalArray<T> slice(int dimension, int from, int to) {

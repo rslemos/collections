@@ -84,17 +84,17 @@ public class SimplePackedArray<T> implements MultiDimensionalArray<T> {
 		return newPos;
 	}
 
-	public SimplePackedArray<T> slice(int dimension, int from, int to) {
-		throw new UnsupportedOperationException();
+	// informational methods
+
+	public int dimensions() {
+		return sizes.length;
 	}
 
-	public SimplePackedArray<T> swap(int dimensionA, int dimensionB) {
-		throw new UnsupportedOperationException();
+	public int[] length() {
+		return sizes.clone();
 	}
 
-	public SimplePackedArray<T> transpose() {
-		throw new UnsupportedOperationException();
-	}
+	// storage methods
 
 	public T get(int... pos) {
 		checkBoundaries(pos);
@@ -108,13 +108,21 @@ public class SimplePackedArray<T> implements MultiDimensionalArray<T> {
 		return old;
 	}
 
-	public int[] length() {
-		return sizes.clone();
+	// view methods
+
+	public SimplePackedArray<T> slice(int dimension, int from, int to) {
+		throw new UnsupportedOperationException();
 	}
 
-	public int dimensions() {
-		return sizes.length;
+	public SimplePackedArray<T> swap(int dimensionA, int dimensionB) {
+		throw new UnsupportedOperationException();
 	}
+
+	public SimplePackedArray<T> transpose() {
+		throw new UnsupportedOperationException();
+	}
+
+	// java.lang.Object methods
 
 	@Override
 	public int hashCode() {
@@ -244,6 +252,8 @@ public class SimplePackedArray<T> implements MultiDimensionalArray<T> {
 		
 		return MultiDimensionalArrays.elementWiseEquals(this, other);
 	}
+
+	// auxiliary methods
 
 	protected int computeAddress(int... pos) {
 		int address = 0;
