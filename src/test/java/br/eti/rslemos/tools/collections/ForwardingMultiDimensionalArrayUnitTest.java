@@ -43,9 +43,9 @@ public class ForwardingMultiDimensionalArrayUnitTest {
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
-		subject = new ForwardingMultiDimensionalArray<String>(delegate);
+		subject = wrap(delegate);
 	}
-	
+
 	@Test
 	public void testDimensions() {
 		when(delegate.dimensions()).thenReturn(2);
@@ -102,7 +102,7 @@ public class ForwardingMultiDimensionalArrayUnitTest {
 
 	@Test
 	public void testSlice() {
-		MultiDimensionalArray<String> view = new ForwardingMultiDimensionalArray<String>(null);
+		MultiDimensionalArray<String> view = wrap(null);
 		
 		when(delegate.slice(10, 5, 3)).thenReturn(view);
 		
@@ -115,7 +115,7 @@ public class ForwardingMultiDimensionalArrayUnitTest {
 
 	@Test
 	public void testSwap() {
-		MultiDimensionalArray<String> view = new ForwardingMultiDimensionalArray<String>(null);
+		MultiDimensionalArray<String> view = wrap(null);
 		
 		when(delegate.swap(10, 20)).thenReturn(view);
 		
@@ -128,7 +128,7 @@ public class ForwardingMultiDimensionalArrayUnitTest {
 
 	@Test
 	public void testTranspose() {
-		MultiDimensionalArray<String> view = new ForwardingMultiDimensionalArray<String>(null);
+		MultiDimensionalArray<String> view = wrap(null);
 		
 		when(delegate.transpose()).thenReturn(view);
 		
@@ -142,7 +142,7 @@ public class ForwardingMultiDimensionalArrayUnitTest {
 	@Test
 	@Ignore("mockito does not record equals()")
 	public void testEquals() {
-		MultiDimensionalArray<String> other = new ForwardingMultiDimensionalArray<String>(null);
+		MultiDimensionalArray<String> other = wrap(null);
 		
 		when(delegate.equals(other)).thenReturn(false);
 		
@@ -177,5 +177,11 @@ public class ForwardingMultiDimensionalArrayUnitTest {
 		
 		verify(delegate, times(2)).toString();
 		verifyNoMoreInteractions(delegate);
+	}
+
+	private static <T> ForwardingMultiDimensionalArray<T> wrap(final MultiDimensionalArray<T> delegate) {
+		return new ForwardingMultiDimensionalArray<T>() {
+			@Override protected MultiDimensionalArray<T> delegate() { return delegate; }
+		};
 	}
 }

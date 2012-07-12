@@ -22,8 +22,15 @@ package br.eti.rslemos.tools.collections;
 
 public class UnmodifiableMultiDimensionalArray<T> extends ForwardingMultiDimensionalArray<T> {
 
+	private final MultiDimensionalArray<T> delegate;
+
 	public UnmodifiableMultiDimensionalArray(MultiDimensionalArray<T> delegate) {
-		super(delegate);
+		this.delegate = delegate;
+	}
+
+	@Override
+	protected MultiDimensionalArray<T> delegate() {
+		return delegate;
 	}
 
 	// storage methods
@@ -49,6 +56,4 @@ public class UnmodifiableMultiDimensionalArray<T> extends ForwardingMultiDimensi
 	public MultiDimensionalArray<T> transpose() {
 		return new UnmodifiableMultiDimensionalArray<T>(super.transpose());
 	}
-
-	
 }

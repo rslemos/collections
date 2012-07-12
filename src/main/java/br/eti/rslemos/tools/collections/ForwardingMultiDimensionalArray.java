@@ -20,62 +20,55 @@
  ******************************************************************************/
 package br.eti.rslemos.tools.collections;
 
-public class ForwardingMultiDimensionalArray<T> implements MultiDimensionalArray<T> {
+import com.google.common.collect.ForwardingObject;
 
-	private final MultiDimensionalArray<T> delegate;
+public abstract class ForwardingMultiDimensionalArray<T> extends ForwardingObject implements MultiDimensionalArray<T> {
 
-	public ForwardingMultiDimensionalArray(MultiDimensionalArray<T> delegate) {
-		this.delegate = delegate;
-	}
+	protected abstract MultiDimensionalArray<T> delegate();
 
 	// informational methods
 	
 	public int dimensions() {
-		return delegate.dimensions();
+		return delegate().dimensions();
 	}
 
 	public int[] length() {
-		return delegate.length();
+		return delegate().length();
 	}
 
 	// storage methods
 
 	public T get(int... pos) {
-		return delegate.get(pos);
+		return delegate().get(pos);
 	}
 
 	public T set(T element, int... pos) {
-		return delegate.set(element, pos);
+		return delegate().set(element, pos);
 	}
 
 	// view methods
 
 	public MultiDimensionalArray<T> slice(int dimension, int from, int to) {
-		return delegate.slice(dimension, from, to);
+		return delegate().slice(dimension, from, to);
 	}
 
 	public MultiDimensionalArray<T> swap(int dimensionA, int dimensionB) {
-		return delegate.swap(dimensionA, dimensionB);
+		return delegate().swap(dimensionA, dimensionB);
 	}
 
 	public MultiDimensionalArray<T> transpose() {
-		return delegate.transpose();
+		return delegate().transpose();
 	}
 
 	// java.lang.Object methods
 
 	@Override
 	public boolean equals(Object obj) {
-		return delegate.equals(obj);
+		return delegate().equals(obj);
 	}
 
 	@Override
 	public int hashCode() {
-		return delegate.hashCode();
-	}
-
-	@Override
-	public String toString() {
-		return delegate.toString();
+		return delegate().hashCode();
 	}
 }
