@@ -20,24 +20,13 @@
  ******************************************************************************/
 package br.eti.rslemos.tools.collections;
 
-public class JavaArrayMultiDimensionalArray<T> implements MultiDimensionalArray<T> {
+public class JavaArrayMultiDimensionalArray<T> extends AbstractMultiDimensionalArray<T> {
 
 	private final Object javaArray;
-	private final int[] lengths;
 
-	public JavaArrayMultiDimensionalArray(Object javaArray, int... lengths) {
+	public JavaArrayMultiDimensionalArray(Object javaArray, int... sizes) {
+		super(sizes);
 		this.javaArray = javaArray;
-		this.lengths = lengths;
-	}
-
-	// informational methods
-
-	public int[] length() {
-		return lengths.clone();
-	}
-
-	public int dimensions() {
-		return lengths.length;
 	}
 
 	// storage methods
@@ -90,20 +79,5 @@ public class JavaArrayMultiDimensionalArray<T> implements MultiDimensionalArray<
 
 	public MultiDimensionalArray<T> transpose() {
 		throw new UnsupportedOperationException();
-	}
-
-	// auxiliary methods
-
-	private void checkBoundaries(int... pos) {
-		if (pos.length != lengths.length)
-			throw new IllegalArgumentException("Wrong number of dimensions: " + pos.length);
-		
-		if (lengths.length > 0) {
-			for (int i = 0; i < lengths.length; i++) {
-				if (pos[i] < 0 || pos[i] >= lengths[i])
-					throw new ArrayIndexOutOfBoundsException(pos[i]);
-			}
-		} else
-			throw new ArrayIndexOutOfBoundsException();
 	}
 }
